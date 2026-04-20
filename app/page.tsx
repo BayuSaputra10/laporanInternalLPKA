@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   // =========================
-  // FETCH FUNCTION (SAFE)
+  // FETCH DATA
   // =========================
   const fetchData = async () => {
     try {
@@ -37,7 +37,7 @@ export default function Dashboard() {
   }
 
   // =========================
-  // REALTIME EFFECT (FIXED ESLINT)
+  // REALTIME POLLING (SAFE)
   // =========================
   useEffect(() => {
     let isMounted = true
@@ -51,7 +51,7 @@ export default function Dashboard() {
 
     const interval = setInterval(() => {
       run()
-    }, 5000) // 5 detik realtime update
+    }, 5000)
 
     return () => {
       isMounted = false
@@ -107,37 +107,59 @@ export default function Dashboard() {
 
         </div>
 
-        {/* ACTION */}
+        {/* ACTION BUTTON */}
         <div className="flex gap-4 mb-8">
           <Link
             href="/reports/genset/create"
             className="bg-green-600 text-white px-4 py-2 rounded"
           >
-            + Genset
+            + Input Genset
           </Link>
 
           <Link
             href="/reports/vehicle/create"
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
-            + Vehicle
+            + Input Kendaraan
           </Link>
         </div>
 
         {/* ================= GENSET ================= */}
         <div className="bg-white rounded-xl shadow mb-6 p-4">
 
-          <h2 className="font-bold text-green-600 mb-4">
-            Genset Terbaru
-          </h2>
+          {/* HEADER */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-green-600">
+              Genset Terbaru
+            </h2>
+
+            <Link
+              href="/reports/genset"
+              className="text-sm text-green-600 hover:underline"
+            >
+              Lihat Semua →
+            </Link>
+          </div>
 
           {gensetReports.length === 0 && (
             <p className="text-gray-400">Belum ada data genset</p>
           )}
 
           {gensetReports.map((r) => (
-            <div key={r.id} className="border-b py-2 text-black">
-              {new Date(r.tanggal).toLocaleDateString("id-ID")} - {r.regu}
+            <div
+              key={r.id}
+              className="border-b py-2 flex justify-between items-center text-black"
+            >
+              <div>
+                {new Date(r.tanggal).toLocaleDateString("id-ID")} - {r.regu}
+              </div>
+
+              <Link
+                href={`/reports/genset/${r.id}`}
+                className="text-green-600 text-sm hover:underline"
+              >
+                Detail
+              </Link>
             </div>
           ))}
 
@@ -146,17 +168,39 @@ export default function Dashboard() {
         {/* ================= VEHICLE ================= */}
         <div className="bg-white rounded-xl shadow p-4">
 
-          <h2 className="font-bold text-blue-600 mb-4">
-            Vehicle Terbaru
-          </h2>
+          {/* HEADER */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-blue-600">
+              Vehicle Terbaru
+            </h2>
+
+            <Link
+              href="/reports/vehicle"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Lihat Semua →
+            </Link>
+          </div>
 
           {vehicleReports.length === 0 && (
             <p className="text-gray-400">Belum ada data kendaraan</p>
           )}
 
           {vehicleReports.map((r) => (
-            <div key={r.id} className="border-b py-2 text-black">
-              {new Date(r.tanggal).toLocaleDateString("id-ID")} - {r.jenisKendaraan}
+            <div
+              key={r.id}
+              className="border-b py-2 flex justify-between items-center text-black"
+            >
+              <div>
+                {new Date(r.tanggal).toLocaleDateString("id-ID")} - {r.jenisKendaraan}
+              </div>
+
+              <Link
+                href={`/reports/vehicle/${r.id}`}
+                className="text-blue-600 text-sm hover:underline"
+              >
+                Detail
+              </Link>
             </div>
           ))}
 
