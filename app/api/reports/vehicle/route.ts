@@ -8,9 +8,6 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
-    // ========================
-    // RAW VALUES
-    // ========================
     const jenisKendaraan = formData.get("jenisKendaraan")
     const keperluan = formData.get("keperluan")
     const tanggal = formData.get("tanggal")
@@ -23,9 +20,9 @@ export async function POST(req: Request) {
 
     const photo = formData.get("photo") as File | null
 
-    // ========================
+    // =========================
     // DEBUG LOG (WAJIB DI VERCEL)
-    // ========================
+    // =========================
     console.log("VEHICLE PAYLOAD:", {
       jenisKendaraan,
       keperluan,
@@ -36,9 +33,9 @@ export async function POST(req: Request) {
       solarAkhirNum
     })
 
-    // ========================
-    // VALIDASI WAJIB FIELD
-    // ========================
+    // =========================
+    // VALIDASI FIELD WAJIB
+    // =========================
     if (!jenisKendaraan || !keperluan || !tanggal) {
       return NextResponse.json(
         { success: false, message: "Field wajib belum lengkap" },
@@ -46,9 +43,9 @@ export async function POST(req: Request) {
       )
     }
 
-    // ========================
-    // VALIDASI NUMBER (INI PENTING)
-    // ========================
+    // =========================
+    // VALIDASI NUMBER (ANTI BUG SILENT FAIL)
+    // =========================
     if (
       isNaN(kmAwalNum) ||
       isNaN(kmAkhirNum) ||
@@ -64,15 +61,15 @@ export async function POST(req: Request) {
       )
     }
 
-    // ========================
+    // =========================
     // HITUNG DATA
-    // ========================
+    // =========================
     const kmPemakaian = kmAkhirNum - kmAwalNum
     const solarPemakaian = solarAwalNum - solarAkhirNum
 
-    // ========================
-    // FILE HANDLING
-    // ========================
+    // =========================
+    // HANDLE FILE
+    // =========================
     let fotoData: Buffer | null = null
 
     if (photo) {
@@ -80,9 +77,9 @@ export async function POST(req: Request) {
       fotoData = Buffer.from(bytes)
     }
 
-    // ========================
-    // PRISMA INSERT
-    // ========================
+    // =========================
+    // INSERT DATABASE
+    // =========================
     const report = await prisma.vehicleReport.create({
       data: {
         jenisKendaraan: String(jenisKendaraan),
@@ -103,9 +100,6 @@ export async function POST(req: Request) {
       }
     })
 
-    // ========================
-    // SUCCESS LOG
-    // ========================
     console.log("CREATED VEHICLE REPORT:", report)
 
     return NextResponse.json({
@@ -114,9 +108,6 @@ export async function POST(req: Request) {
     })
 
   } catch (error: any) {
-    // ========================
-    // ERROR DETAIL (IMPORTANT)
-    // ========================
     console.error("VEHICLE API ERROR FULL:", error)
 
     return NextResponse.json(
