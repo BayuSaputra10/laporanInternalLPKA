@@ -1,32 +1,44 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+
+export const runtime = "nodejs"
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData()
 
+    // ========================
+    // RAW VALUES
+    // ========================
     const jenisKendaraan = formData.get("jenisKendaraan")
     const keperluan = formData.get("keperluan")
     const tanggal = formData.get("tanggal")
 
-    const kmAwal = Number(formData.get("kmAwal"))
-    const kmAkhir = Number(formData.get("kmAkhir"))
+    const kmAwalNum = Number(formData.get("kmAwal"))
+    const kmAkhirNum = Number(formData.get("kmAkhir"))
 
-    const solarAwalStrip = Number(formData.get("solarAwalStrip"))
-    const solarAkhirStrip = Number(formData.get("solarAkhirStrip"))
+    const solarAwalNum = Number(formData.get("solarAwalStrip"))
+    const solarAkhirNum = Number(formData.get("solarAkhirStrip"))
 
     const photo = formData.get("photo") as File | null
 
-    // 🔥 DEBUG LOG WAJIB
+    // ========================
+    // DEBUG LOG (WAJIB DI VERCEL)
+    // ========================
     console.log("VEHICLE PAYLOAD:", {
       jenisKendaraan,
       keperluan,
       tanggal,
-      kmAwal,
-      kmAkhir
+      kmAwalNum,
+      kmAkhirNum,
+      solarAwalNum,
+      solarAkhirNum
     })
 
-    // ❗ VALIDASI WAJIB
+    // ========================
+    // VALIDASI WAJIB FIELD
+    // ========================
     if (!jenisKendaraan || !keperluan || !tanggal) {
       return NextResponse.json(
         { success: false, message: "Field wajib belum lengkap" },
@@ -34,9 +46,33 @@ export async function POST(req: Request) {
       )
     }
 
-    const kmPemakaian = kmAkhir - kmAwal
-    const solarPemakaian = solarAwalStrip - solarAkhirStrip
+    // ========================
+    // VALIDASI NUMBER (INI PENTING)
+    // ========================
+    if (
+      isNaN(kmAwalNum) ||
+      isNaN(kmAkhirNum) ||
+      isNaN(solarAwalNum) ||
+      isNaN(solarAkhirNum)
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Numeric field tidak valid (NaN detected)"
+        },
+        { status: 400 }
+      )
+    }
 
+    // ========================
+    // HITUNG DATA
+    // ========================
+    const kmPemakaian = kmAkhirNum - kmAwalNum
+    const solarPemakaian = solarAwalNum - solarAkhirNum
+
+    // ========================
+    // FILE HANDLING
+    // ========================
     let fotoData: Buffer | null = null
 
     if (photo) {
@@ -44,18 +80,21 @@ export async function POST(req: Request) {
       fotoData = Buffer.from(bytes)
     }
 
+    // ========================
+    // PRISMA INSERT
+    // ========================
     const report = await prisma.vehicleReport.create({
       data: {
         jenisKendaraan: String(jenisKendaraan),
         keperluan: String(keperluan),
         tanggal: new Date(String(tanggal)),
 
-        kmAwal,
-        kmAkhir,
+        kmAwal: kmAwalNum,
+        kmAkhir: kmAkhirNum,
         kmPemakaian,
 
-        solarAwalStrip,
-        solarAkhirStrip,
+        solarAwalStrip: solarAwalNum,
+        solarAkhirStrip: solarAkhirNum,
         solarPemakaian,
 
         fotoData: fotoData ?? null,
@@ -64,6 +103,9 @@ export async function POST(req: Request) {
       }
     })
 
+    // ========================
+    // SUCCESS LOG
+    // ========================
     console.log("CREATED VEHICLE REPORT:", report)
 
     return NextResponse.json({
@@ -71,11 +113,19 @@ export async function POST(req: Request) {
       data: report
     })
 
-  } catch (error) {
-    console.error("VEHICLE API ERROR:", error)
+  } catch (error: any) {
+    // ========================
+    // ERROR DETAIL (IMPORTANT)
+    // ========================
+    console.error("VEHICLE API ERROR FULL:", error)
 
     return NextResponse.json(
-      { success: false, message: "Internal Server Error", error },
+      {
+        success: false,
+        message: error?.message || "Internal Server Error",
+        code: error?.code || null,
+        meta: error?.meta || null
+      },
       { status: 500 }
     )
   }
