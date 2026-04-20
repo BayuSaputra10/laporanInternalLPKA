@@ -1,44 +1,81 @@
-import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-
-interface InspectionItem {
-  itemId: number
-  kondisi: string
-  keterangan: string
-}
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const formData = await req.formData()
 
-    const {
+    const jenisKendaraan = formData.get("jenisKendaraan")
+    const keperluan = formData.get("keperluan")
+    const tanggal = formData.get("tanggal")
+
+    const kmAwal = Number(formData.get("kmAwal"))
+    const kmAkhir = Number(formData.get("kmAkhir"))
+
+    const solarAwalStrip = Number(formData.get("solarAwalStrip"))
+    const solarAkhirStrip = Number(formData.get("solarAkhirStrip"))
+
+    const photo = formData.get("photo") as File | null
+
+    // 🔥 DEBUG LOG WAJIB
+    console.log("VEHICLE PAYLOAD:", {
+      jenisKendaraan,
+      keperluan,
       tanggal,
-      unit,
-      catatan,
-      inspections
-    } = body
+      kmAwal,
+      kmAkhir
+    })
 
-    // VALIDASI WAJIB
-    if (!tanggal) {
+    // ❗ VALIDASI WAJIB
+    if (!jenisKendaraan || !keperluan || !tanggal) {
       return NextResponse.json(
-        { error: "Tanggal wajib diisi" },
+        { success: false, message: "Field wajib belum lengkap" },
         { status: 400 }
       )
     }
 
+    const kmPemakaian = kmAkhir - kmAwal
+    const solarPemakaian = solarAwalStrip - solarAkhirStrip
+
+    let fotoData: Buffer | null = null
+
+    if (photo) {
+      const bytes = await photo.arrayBuffer()
+      fotoData = Buffer.from(bytes)
+    }
+
     const report = await prisma.vehicleReport.create({
       data: {
-        tanggal: new Date(tanggal),
-        unit: unit || null,
-        catatan: catatan || null
+        jenisKendaraan: String(jenisKendaraan),
+        keperluan: String(keperluan),
+        tanggal: new Date(String(tanggal)),
+
+        kmAwal,
+        kmAkhir,
+        kmPemakaian,
+
+        solarAwalStrip,
+        solarAkhirStrip,
+        solarPemakaian,
+
+        fotoData: fotoData ?? null,
+
+        status: "draft"
       }
     })
 
-    return NextResponse.json(report, { status: 201 })
+    console.log("CREATED VEHICLE REPORT:", report)
+
+    return NextResponse.json({
+      success: true,
+      data: report
+    })
+
   } catch (error) {
-    console.error("Error creating vehicle report:", error)
+    console.error("VEHICLE API ERROR:", error)
+
     return NextResponse.json(
-      { error: "Failed to create vehicle report" },
+      { success: false, message: "Internal Server Error", error },
       { status: 500 }
     )
   }

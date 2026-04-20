@@ -1,30 +1,61 @@
-import { prisma } from '@/lib/prisma'
-import { NextResponse } from 'next/server'
+import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server"
 
-export async function GET() {
+export async function POST(req: Request) {
   try {
-    const gensetReports = await prisma.gensetReport.findMany({
-      orderBy: {
-        id: "desc"
+    const formData = await req.formData()
+
+    const jenisKendaraan = formData.get("jenisKendaraan") as string
+    const keperluan = formData.get("keperluan") as string
+    const tanggal = formData.get("tanggal") as string
+
+    const kmAwal = Number(formData.get("kmAwal"))
+    const kmAkhir = Number(formData.get("kmAkhir"))
+
+    const solarAwalStrip = Number(formData.get("solarAwalStrip"))
+    const solarAkhirStrip = Number(formData.get("solarAkhirStrip"))
+
+    const kmPemakaian = kmAkhir - kmAwal
+    const solarPemakaian = solarAwalStrip - solarAkhirStrip
+
+    const photo = formData.get("photo") as File | null
+
+    let fotoData: Buffer | null = null
+
+    if (photo) {
+      const bytes = await photo.arrayBuffer()
+      fotoData = Buffer.from(bytes)
+    }
+
+    const report = await prisma.vehicleReport.create({
+      data: {
+        jenisKendaraan,
+        keperluan,
+        tanggal: new Date(tanggal),
+
+        kmAwal,
+        kmAkhir,
+        kmPemakaian,
+
+        solarAwalStrip,
+        solarAkhirStrip,
+        solarPemakaian,
+
+        fotoData, // ✅ BASE64
+
+        status: "draft"
       }
     })
 
-    const vehicleReports = await prisma.vehicleReport.findMany({
-      orderBy: {
-        id: "desc"
-      }
+    return NextResponse.json({
+      success: true,
+      data: report
     })
-
-    const combined = [
-      ...gensetReports.map(r => ({ ...r, type: 'genset' })),
-      ...vehicleReports.map(r => ({ ...r, type: 'vehicle' }))
-    ].sort((a, b) => b.id - a.id)
-
-    return NextResponse.json(combined)
   } catch (error) {
-    console.error('Error fetching reports:', error)
+    console.error(error)
+
     return NextResponse.json(
-      { error: 'Failed to fetch reports' },
+      { success: false, message: "Internal Server Error" },
       { status: 500 }
     )
   }

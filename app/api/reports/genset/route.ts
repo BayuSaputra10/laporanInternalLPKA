@@ -1,97 +1,59 @@
-import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-
-interface InspectionItem {
-  itemId: string
-  kondisi: string
-  keterangan: string
-}
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const formData = await req.formData()
 
-    const {
-      regu,
-      tanggal,
-      mesin,
-      generator,
-      shift,
-      speed,
-      oliPress,
-      temp,
-      volt,
-      hz,
-      kw,
-      ampereR,
-      ampereS,
-      ampereT,
-      ampere,
-      solarLevelAwal,
-      solarLevelAkhir,
-      solarPemakaian,
-      gantiOliMesin,
-      gantiFilterOli,
-      gantiFilterSolar,
-      catatan,
-      inspections
-    } = body
+    const regu = formData.get("regu") as string
+    const tanggal = formData.get("tanggal") as string
 
-    // VALIDASI WAJIB
-    if (!regu || !tanggal) {
-      return NextResponse.json(
-        { error: "Regu dan tanggal wajib diisi" },
-        { status: 400 }
-      )
+    const waktuPemakaianJam = Number(formData.get("waktuPemakaianJam"))
+    const hourMeterAwal = Number(formData.get("hourMeterAwal"))
+    const hourMeterAkhir = Number(formData.get("hourMeterAkhir"))
+
+    const solarLevelAwal = Number(formData.get("solarLevelAwal"))
+    const solarLevelAkhir = Number(formData.get("solarLevelAkhir"))
+
+    const solarPemakaian = solarLevelAwal - solarLevelAkhir
+
+    const photo = formData.get("photo") as File | null
+
+    let photoData: Buffer | null = null
+
+    if (photo) {
+      const bytes = await photo.arrayBuffer()
+      photoData = Buffer.from(bytes)
     }
 
     const report = await prisma.gensetReport.create({
       data: {
         regu,
         tanggal: new Date(tanggal),
-        mesin,
-        generator,
-        shift,
 
-        speed,
-        oliPress,
-        temp,
-
-        volt,
-        hz,
-        kw,
-
-        ampereR,
-        ampereS,
-        ampereT,
-        ampere,
+        waktuPemakaianJam,
+        hourMeterAwal,
+        hourMeterAkhir,
 
         solarLevelAwal,
         solarLevelAkhir,
         solarPemakaian,
 
-        gantiOliMesin,
-        gantiFilterOli,
-        gantiFilterSolar,
+        photoData, // ✅ BASE64/BINARY
 
-        catatan,
-
-        inspections: {
-          create: inspections.map((item: InspectionItem) => ({
-            itemId: item.itemId,
-            kondisi: item.kondisi,
-            keterangan: item.keterangan
-          }))
-        }
+        createdAt: new Date()
       }
     })
 
-    return NextResponse.json(report)
-
+    return NextResponse.json({
+      success: true,
+      data: report
+    })
   } catch (error) {
     console.error(error)
+
     return NextResponse.json(
-      { error: "Terjadi kesalahan server" },
+      { success: false, message: "Internal Server Error" },
       { status: 500 }
     )
   }

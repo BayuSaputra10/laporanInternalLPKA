@@ -8,74 +8,72 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
 model VehicleReport {
   id        Int      @id @default(autoincrement())
-  tanggal   DateTime
-  unit      String?
-  catatan   String?
-}
 
+  jenisKendaraan String
+  keperluan      String
+  tanggal        DateTime
+
+  kmAwal         Float
+  kmAkhir        Float
+
+  kmPemakaian    Float?
+
+  solarAwalStrip Float
+  solarAkhirStrip Float
+
+  solarPemakaian Float?
+
+  fotoData Bytes?   // ✅ BASE64 / BINARY
+
+  reportNumber String @unique @default(cuid())
+  createdBy    String?
+  status       String @default("draft")
+
+  createdAt    DateTime @default(now())
+}
 
 
 model GensetReport {
   id        Int      @id @default(autoincrement())
+
   regu      String
   tanggal   DateTime
-  mesin     String?
-  generator String?
-  shift     String?
 
-  speed     Float?
-  oliPress  Float?
-  temp      Float?
+  waktuPemakaianJam Float
+  hourMeterAwal     Float
+  hourMeterAkhir    Float
 
-  volt      Float?
-  hz        Float?
-  kw        Float?
+  solarLevelAwal   Float
+  solarLevelAkhir  Float
 
-  ampereR   Float?
-  ampereS   Float?
-  ampereT   Float?
-  ampere    Float?
-
-  solarLevelAwal   Float?
-  solarLevelAkhir  Float?
   solarPemakaian   Float?
 
-  gantiOliMesin    Float?
-  gantiFilterOli   Float?
-  gantiFilterSolar Float?
+  photoData Bytes?   // ✅ BALIK KE BASE64 STORAGE
 
-  catatan   String?
+  createdAt DateTime @default(now())
 
   inspections GensetInspection[]
 }
 
-
 model GensetInspection {
-  id         Int    @id @default(autoincrement())
+  id         Int @id @default(autoincrement())
+
   reportId   Int
   itemId     Int
+
   kondisi    String
   keterangan String?
 
   report GensetReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-model Inspection {
-  id         Int @id @default(autoincrement())
-  reportId   Int
-  itemId     Int
-  kondisi    String
-  keterangan String?
-
   item   InspectionItem @relation(fields: [itemId], references: [id])
 }
 
 model InspectionItem {
   id     Int    @id @default(autoincrement())
   name   String
-  type   String // vehicle / genset
+  type   String
 
-  inspections Inspection[]
+  inspections GensetInspection[]
 }

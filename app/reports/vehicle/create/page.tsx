@@ -1,255 +1,131 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
-import toast from "react-hot-toast"
+import { useRouter } from "next/navigation"
 
-const VEHICLE_ITEMS = [
-  { id: 1, name: "Radiator" },
-  { id: 2, name: "Oli" },
-  { id: 3, name: "Ban" }
-]
-
-export default function CreateVehicleReport() {
-
-  const initialForm = {
-    vehicleName: "",
-    kmAwal: "",
-    kmAkhir: "",
-    solarAwal: "",
-    solarAkhir: "",
-    catatan: ""
-  }
-
-  const [form, setForm] = useState(initialForm)
-  const [inspections, setInspections] = useState(
-    VEHICLE_ITEMS.map(item => ({
-      itemId: item.id,
-      kondisi: "Normal",
-      keterangan: ""
-    }))
-  )
-  const [errors, setErrors] = useState<any>({})
+export default function CreateVehiclePage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  const handleChange = (e: any) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    })
-
-    setErrors({
-      ...errors,
-      [e.target.name]: ""
-    })
-  }
-
-  const handleInspectionChange = (index: number, field: string, value: string) => {
-    const newInspections = [...inspections]
-    newInspections[index] = { ...newInspections[index], [field]: value }
-    setInspections(newInspections)
-  }
-
-  const validate = () => {
-    const newErrors: any = {}
-
-    if (!form.vehicleName) newErrors.vehicleName = "Wajib diisi"
-    if (!form.kmAwal) newErrors.kmAwal = "Wajib diisi"
-    if (!form.kmAkhir) newErrors.kmAkhir = "Wajib diisi"
-    if (Number(form.kmAkhir) < Number(form.kmAwal)) {
-      newErrors.kmAkhir = "KM tidak valid"
-    }
-    if (!form.solarAwal) newErrors.solarAwal = "Wajib diisi"
-    if (!form.solarAkhir) newErrors.solarAkhir = "Wajib diisi"
-
-    return newErrors
-  }
-
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    const validationErrors = validate()
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
-      toast.error("Form belum lengkap")
-      return
-    }
-
     setLoading(true)
 
-    try {
-      const res = await fetch("/api/reports/vehicle", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          ...form,
-          kmAwal: Number(form.kmAwal),
-          kmAkhir: Number(form.kmAkhir),
-          solarAwal: Number(form.solarAwal),
-          solarAkhir: Number(form.solarAkhir),
-          inspections
-        })
-      })
+    const formData = new FormData(e.currentTarget)
 
-      if (!res.ok) throw new Error()
+    const res = await fetch("/api/reports/vehicle", {
+      method: "POST",
+      body: formData
+    })
 
-      toast.success("Laporan berhasil disimpan")
-
-      setForm(initialForm)
-      setInspections(
-        VEHICLE_ITEMS.map(item => ({
-          itemId: item.id,
-          kondisi: "Normal",
-          keterangan: ""
-        }))
-      )
-      setErrors({})
-
-    } catch {
-      toast.error("Gagal menyimpan data")
-    }
+    const data = await res.json()
+    console.log("API RESPONSE:", data)
 
     setLoading(false)
+
+    if (res.ok) {
+      router.push("/reports/vehicle")
+    } else {
+      alert(data.message || "Gagal membuat laporan")
+    }
   }
 
   return (
-    <div className="min-h-screen bg-slate-700 p-6">
-      <div className="max-w-2xl mx-auto bg-slate-400 p-6 rounded-2xl shadow">
+    <div className="min-h-screen bg-slate-100 p-6 flex items-center justify-center">
 
-        <h1 className="text-2xl font-bold mb-6">Form Kendaraan</h1>
+      <div className="max-w-2xl w-full">
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white/80 backdrop-blur-md border border-white/30 shadow-xl rounded-2xl p-6 text-black">
 
-          {/* NAMA */}
-          <div>
+          <h1 className="text-xl font-bold mb-6">
+            Input Vehicle Report
+          </h1>
+
+          {/* 🔥 FIX UTAMA DI SINI */}
+          <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+
             <input
-              name="vehicleName"
-              value={form.vehicleName}
-              placeholder="Nama Kendaraan"
-              className="w-full border p-2 rounded"
-              onChange={handleChange}
+              name="jenisKendaraan"
+              placeholder="Jenis Kendaraan"
+              className="w-full border bg-white/90 p-2 rounded"
+              required
             />
-            {errors.vehicleName && (
-              <p className="text-red-500 text-sm">{errors.vehicleName}</p>
-            )}
-          </div>
 
-          {/* KM */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+            <input
+              name="keperluan"
+              placeholder="Keperluan"
+              className="w-full border bg-white/90 p-2 rounded"
+              required
+            />
+
+            <input
+              name="tanggal"
+              type="date"
+              className="w-full border bg-white/90 p-2 rounded"
+              required
+            />
+
+            <div className="grid grid-cols-2 gap-2">
+
               <input
                 name="kmAwal"
-                value={form.kmAwal}
+                type="number"
                 placeholder="KM Awal"
-                className="border p-2 rounded w-full"
-                onChange={handleChange}
+                className="border bg-white/90 p-2 rounded"
+                required
               />
-              {errors.kmAwal && (
-                <p className="text-red-500 text-sm">{errors.kmAwal}</p>
-              )}
-            </div>
 
-            <div>
               <input
                 name="kmAkhir"
-                value={form.kmAkhir}
+                type="number"
                 placeholder="KM Akhir"
-                className="border p-2 rounded w-full"
-                onChange={handleChange}
+                className="border bg-white/90 p-2 rounded"
+                required
               />
-              {errors.kmAkhir && (
-                <p className="text-red-500 text-sm">{errors.kmAkhir}</p>
-              )}
-            </div>
-          </div>
 
-          {/* SOLAR */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+
               <input
-                name="solarAwal"
-                value={form.solarAwal}
+                name="solarAwalStrip"
+                type="number"
                 placeholder="Solar Awal"
-                className="border p-2 rounded w-full"
-                onChange={handleChange}
+                className="border bg-white/90 p-2 rounded"
+                required
               />
-              {errors.solarAwal && (
-                <p className="text-red-500 text-sm">{errors.solarAwal}</p>
-              )}
-            </div>
 
-            <div>
               <input
-                name="solarAkhir"
-                value={form.solarAkhir}
+                name="solarAkhirStrip"
+                type="number"
                 placeholder="Solar Akhir"
-                className="border p-2 rounded w-full"
-                onChange={handleChange}
+                className="border bg-white/90 p-2 rounded"
+                required
               />
-              {errors.solarAkhir && (
-                <p className="text-red-500 text-sm">{errors.solarAkhir}</p>
-              )}
+
             </div>
-          </div>
 
-          {/* CATATAN */}
-          <textarea
-            name="catatan"
-            value={form.catatan}
-            placeholder="Catatan"
-            className="w-full border p-2 rounded"
-            onChange={handleChange}
-          />
+            <input
+              name="photo"
+              type="file"
+              accept="image/*"
+              className="w-full"
+            />
 
-          {/* INSPECTIONS */}
-          <div>
-            <h2 className="font-semibold mb-2">Pemeriksaan Item</h2>
-            <div className="space-y-3">
-              {VEHICLE_ITEMS.map((item, index) => (
-                <div key={item.id} className="flex items-center gap-4 p-3 bg-white rounded-lg">
-                  <span className="font-medium w-32">{item.name}</span>
-                  <select
-                    value={inspections[index].kondisi}
-                    onChange={(e) => handleInspectionChange(index, 'kondisi', e.target.value)}
-                    className="border p-1 rounded"
-                  >
-                    <option value="Normal">Normal</option>
-                    <option value="Bocor">Bocor</option>
-                    <option value="Buntu">Buntu</option>
-                    <option value="Pecah">Pecah</option>
-                    <option value="Kendur">Kendur</option>
-                    <option value="Putus">Putus</option>
-                    <option value="Kurang">Kurang</option>
-                    <option value="Kotor">Kotor</option>
-                    <option value="Panas">Panas</option>
-                    <option value="Terbakar">Terbakar</option>
-                    <option value="Rusak">Rusak</option>
-                  </select>
-                  <input
-                    placeholder="Keterangan (opsional)"
-                    value={inspections[index].keterangan}
-                    onChange={(e) => handleInspectionChange(index, 'keterangan', e.target.value)}
-                    className="flex-1 border p-1 rounded"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition"
+            >
+              {loading ? "Menyimpan..." : "Simpan"}
+            </button>
 
-          {/* BUTTON */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white py-2 rounded"
-          >
-            {loading ? "Menyimpan..." : "Simpan"}
-          </button>
+          </form>
 
-        </form>
+        </div>
+
       </div>
+
     </div>
   )
 }
