@@ -1,13 +1,9 @@
+import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url)
-  const type = searchParams.get("type")
+export const runtime = "nodejs"
 
-  const items = await prisma.inspectionItem.findMany({
-    where: { type: type || undefined },
-    orderBy: { id: "asc" }
-  })
-
-  return Response.json(items)
+export async function GET() {
+  const data = await prisma.inspectionItem.findMany()
+  return NextResponse.json(data)
 }
