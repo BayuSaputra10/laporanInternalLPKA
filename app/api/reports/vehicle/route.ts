@@ -1,39 +1,45 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+
+interface InspectionItem {
+  itemId: number
+  kondisi: string
+  keterangan: string
+}
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const report = await prisma.report.create({
+    const {
+      tanggal,
+      unit,
+      catatan,
+      inspections
+    } = body
+
+    // VALIDASI WAJIB
+    if (!tanggal) {
+      return NextResponse.json(
+        { error: "Tanggal wajib diisi" },
+        { status: 400 }
+      )
+    }
+
+    const report = await prisma.vehicleReport.create({
       data: {
-        type: "vehicle",
-        tanggal: new Date(),
-        catatan: body.catatan,
-
-        vehicle: {
-          create: {
-            vehicleName: body.vehicleName,
-            kmAwal: body.kmAwal,
-            kmAkhir: body.kmAkhir,
-            solarAwal: body.solarAwal,
-            solarAkhir: body.solarAkhir,
-          }
-        },
-
-        inspections: {
-          create: body.inspections.map((item: any) => ({
-            itemId: item.itemId, // ✅ FIX DI SINI
-            kondisi: item.kondisi,
-            keterangan: item.keterangan
-          }))
-        }
+        tanggal: new Date(tanggal),
+        unit: unit || null,
+        catatan: catatan || null
       }
     })
 
-    return Response.json(report)
+    return NextResponse.json(report, { status: 201 })
   } catch (error) {
-    console.error(error)
-    return new Response("Error", { status: 500 })
+    console.error("Error creating vehicle report:", error)
+    return NextResponse.json(
+      { error: "Failed to create vehicle report" },
+      { status: 500 }
+    )
   }
 }

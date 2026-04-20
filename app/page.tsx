@@ -2,19 +2,40 @@ import { prisma } from "@/lib/prisma"
 import Link from "next/link"
 
 export default async function Dashboard() {
+    // Check if DATABASE_URL is set
+    if (!process.env.DATABASE_URL) {
+        throw new Error(
+            'DATABASE_URL environment variable is not set. ' +
+            'Please configure it in Vercel or your hosting platform.'
+        )
+    }
 
-    const gensetReports = await prisma.gensetReport.findMany({
-        take: 5,
-        orderBy: { id: "desc" }
-    })
+    let gensetReports = []
+    let vehicleReports = []
+    let totalGenset = 0
+    let totalVehicle = 0
 
-    const vehicleReports = await prisma.vehicleReport.findMany({
-        take: 5,
-        orderBy: { id: "desc" }
-    })
+    try {
+        gensetReports = await prisma.gensetReport.findMany({
+            take: 5,
+            orderBy: { id: "desc" }
+        })
 
-    const totalGenset = await prisma.gensetReport.count()
-    const totalVehicle = await prisma.vehicleReport.count()
+        vehicleReports = await prisma.vehicleReport.findMany({
+            take: 5,
+            orderBy: { id: "desc" }
+        })
+
+        totalGenset = await prisma.gensetReport.count()
+        totalVehicle = await prisma.vehicleReport.count()
+    } catch (error) {
+        console.error('Database connection error:', error)
+        throw new Error(
+            'Failed to connect to database. ' +
+            'Please check your DATABASE_URL and ensure the database is running. ' +
+            'Error: ' + (error instanceof Error ? error.message : String(error))
+        )
+    }
 
     return (
         <div className="min-h-screen bg-slate-100 p-6">
