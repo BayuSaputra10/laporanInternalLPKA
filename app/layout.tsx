@@ -1,4 +1,5 @@
 import "./globals.css"
+import Link from "next/link"
 import { Toaster } from "react-hot-toast"
 
 export const metadata = {
@@ -14,8 +15,31 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className="bg-slate-100">
+        <header className="bg-slate-900 text-white shadow-sm">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+            <div>
+              <Link href="/" className="text-xl font-semibold tracking-tight">
+                Laporan Internal
+              </Link>
+              <p className="text-sm text-slate-300">Laporan pemeriksaan kendaraan & genset</p>
+            </div>
+            <nav className="flex flex-wrap gap-3 text-sm">
+              <Link href="/" className="rounded-md bg-slate-700 px-3 py-2 hover:bg-slate-600 transition">
+                Dashboard
+              </Link>
+              <Link href="/reports/vehicle/create" className="rounded-md bg-slate-700 px-3 py-2 hover:bg-slate-600 transition">
+                Baru Kendaraan
+              </Link>
+              <Link href="/reports/genset/create" className="rounded-md bg-slate-700 px-3 py-2 hover:bg-slate-600 transition">
+                Baru Genset
+              </Link>
+            </nav>
+          </div>
+        </header>
 
-        {children}
+        <main className="min-h-[calc(100vh-88px)]">
+          {children}
+        </main>
 
         {/* 🔥 TOAST GLOBAL */}
         <Toaster

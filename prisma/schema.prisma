@@ -13,10 +13,14 @@ model VehicleReport {
   id        Int      @id @default(autoincrement())
   tanggal   DateTime
   unit      String?
+  kmAwal    Int?
+  kmAkhir   Int?
+  solarAwal Float?
+  solarAkhir Float?
   catatan   String?
+
+  inspections VehicleInspection[]
 }
-
-
 
 model GensetReport {
   id        Int      @id @default(autoincrement())
@@ -52,6 +56,16 @@ model GensetReport {
   inspections GensetInspection[]
 }
 
+model VehicleInspection {
+  id         Int    @id @default(autoincrement())
+  reportId   Int
+  itemId     Int
+  kondisi    String
+  keterangan String?
+
+  report VehicleReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  item   InspectionItem @relation(fields: [itemId], references: [id])
+}
 
 model GensetInspection {
   id         Int    @id @default(autoincrement())
@@ -61,14 +75,6 @@ model GensetInspection {
   keterangan String?
 
   report GensetReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
-}
-model Inspection {
-  id         Int @id @default(autoincrement())
-  reportId   Int
-  itemId     Int
-  kondisi    String
-  keterangan String?
-
   item   InspectionItem @relation(fields: [itemId], references: [id])
 }
 
@@ -77,5 +83,6 @@ model InspectionItem {
   name   String
   type   String // vehicle / genset
 
-  inspections Inspection[]
+  vehicleInspections VehicleInspection[]
+  gensetInspections  GensetInspection[]
 }

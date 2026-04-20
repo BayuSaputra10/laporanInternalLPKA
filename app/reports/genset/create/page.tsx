@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import toast from "react-hot-toast"
 
 const GENSET_ITEMS = [
   { id: 1, name: "Periksa level coolant" },
@@ -51,6 +52,7 @@ export default function CreateGensetReport() {
 
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState<FormErrors>({})
+  const [inspectionItems, setInspectionItems] = useState(GENSET_ITEMS)
   const [inspections, setInspections] = useState(
     GENSET_ITEMS.map(item => ({
       itemId: item.id,
@@ -58,17 +60,27 @@ export default function CreateGensetReport() {
       keterangan: ""
     }))
   )
+  const [loading, setLoading] = useState(false)
 
-  const [keteranganData, setKeteranganData] = useState({
-  I: { awal: "", akhir: "", total: "" },
-  S: { awal: "", akhir: "", total: "" },
-  III: { awal: "", akhir: "", total: "" }
-})
-
-const [JadwalData, setJadwalData] = useState({
-  Lalu: { awal: "", akhir: "", total: "" },
-  AkanDatang: { awal: "", akhir: "", total: "" }
-})
+  useEffect(() => {
+    async function loadInspectionItems() {
+      try {
+        const res = await fetch("/api/inspection-items?type=genset")
+        const data = await res.json()
+        if (Array.isArray(data) && data.length > 0) {
+          setInspectionItems(data)
+          setInspections(data.map((item: any) => ({
+            itemId: item.id,
+            kondisi: "Normal",
+            keterangan: ""
+          })))
+        }
+      } catch (error) {
+        console.error("Failed to load genset inspection items", error)
+      }
+    }
+    loadInspectionItems()
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({
@@ -80,35 +92,6 @@ const [JadwalData, setJadwalData] = useState({
       [e.target.name]: ""
     }))
   }
-
-
-  const handleKeteranganChange = (
-  shift: "I" | "S" | "III",
-  field: "awal" | "akhir" | "total",
-  value: string
-) => {
-  setKeteranganData(prev => ({
-    ...prev,
-    [shift]: {
-      ...prev[shift],
-      [field]: value
-    }
-  }))
-}
-
-const handleJadwalChange = (
-  type: "Lalu" | "AkanDatang",
-  field: "awal" | "akhir" | "total",
-  value: string
-) => {
-  setJadwalData(prev => ({
-    ...prev,
-    [type]: {
-      ...prev[type],
-      [field]: value
-    }
-  }))
-}
 
 
   // 🔥 FIX: pakai itemId (bukan index)
@@ -133,7 +116,7 @@ const handleJadwalChange = (
     if (!form.tanggal) newErrors.tanggal = "Wajib diisi"
 
     // Validasi numerik untuk field teknis
-    const numericFields = ['speed', 'oliPress', 'temp', 'voltR', 'voltS', 'voltT', 'hz', 'kw', 'ampere', 'solarLevelAwal', 'solarLevelAkhir', 'solarPemakaian', 'gantiOliMesin', 'gantiFilterOli', 'gantiFilterSolar']
+    const numericFields = ['speed', 'oliPress', 'temp', 'volt', 'hz', 'kw', 'ampere', 'solarLevelAwal', 'solarLevelAkhir', 'solarPemakaian', 'gantiOliMesin', 'gantiFilterOli', 'gantiFilterSolar']
     const formRecord = form as Record<string, any>
     numericFields.forEach(field => {
       if (formRecord[field] && isNaN(Number(formRecord[field]))) {
@@ -150,10 +133,11 @@ const handleJadwalChange = (
     const validationErrors = validate()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
-      alert("Form belum lengkap atau tidak valid")
+      toast.error("Form belum lengkap atau tidak valid")
       return
     }
 
+    setLoading(true)
     try {
       const res = await fetch("/api/reports/genset", {
         method: "POST",
@@ -188,17 +172,17 @@ const handleJadwalChange = (
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: "Unknown error" }))
-        alert(`Gagal menyimpan: ${errorData.error || res.statusText}`)
+        toast.error(`Gagal menyimpan: ${errorData.error || res.statusText}`)
         console.error("API Error:", errorData)
         return
       }
 
-      const result = await res.json()
-      alert("Tersimpan")
+      await res.json()
+      toast.success("Laporan genset berhasil disimpan")
 
       setForm(initialForm)
       setInspections(
-        GENSET_ITEMS.map(item => ({
+        inspectionItems.map(item => ({
           itemId: item.id,
           kondisi: "Normal",
           keterangan: ""
@@ -206,8 +190,10 @@ const handleJadwalChange = (
       )
       setErrors({})
     } catch (error) {
-      alert("Error: " + (error as Error).message)
+      toast.error("Terjadi kesalahan saat menyimpan laporan")
       console.error("Network error:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -215,8 +201,18 @@ const handleJadwalChange = (
     <div className="min-h-screen bg-linear-to-br from-slate-900 to-slate-800 p-4 md:p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="bg-linear-to-r from-blue-600 to-blue-700 px-6 md:px-8 py-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Form Laporan Genset</h1>
-          <p className="text-blue-100 mt-2">Isi semua data sesuai dengan kondisi genset</p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">Form Laporan Genset</h1>
+              <p className="text-blue-100 mt-2">Isi semua data sesuai dengan kondisi genset</p>
+            </div>
+            <Link
+              href="/"
+              className="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
+            >
+              ← Kembali ke Dashboard
+            </Link>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
@@ -370,191 +366,7 @@ const handleJadwalChange = (
             </div>
           </div>
 
- {/* Keterangan */}
-<div className="bg-linear-to-br from-indigo-50 to-indigo-100 p-6 rounded-lg border-2 border-indigo-300">
-  <h3 className="font-bold text-lg text-gray-900 mb-4 pb-3 border-b border-indigo-300">Keterangan Jam Operasional</h3>
 
-  <div className="overflow-x-auto space-y-6">
-
-    {/* TABLE 1 */}
-    <div>
-      <h4 className="font-semibold text-sm text-gray-800 mb-3">Hourmeter Shift</h4>
-      <table className="w-full border-collapse border border-indigo-300">
-        <thead>
-          <tr className="bg-indigo-200">
-            <th className="border border-indigo-300 px-4 py-2 text-left font-bold text-sm text-gray-900">Keterangan</th>
-            <th className="border border-indigo-300 px-4 py-2 text-center font-bold text-sm text-gray-900">Shift I</th>
-            <th className="border border-indigo-300 px-4 py-2 text-center font-bold text-sm text-gray-900">Shift S</th>
-            <th className="border border-indigo-300 px-4 py-2 text-center font-bold text-sm text-gray-900">Shift III</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr className="hover:bg-indigo-100 transition">
-            <td className="border border-indigo-300 px-4 py-2 font-semibold text-gray-700">Awal</td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.I.awal}
-                onChange={(e) => handleKeteranganChange("I", "awal", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.S.awal}
-                onChange={(e) => handleKeteranganChange("S", "awal", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.III.awal}
-                onChange={(e) => handleKeteranganChange("III", "awal", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-          </tr>
-
-          <tr className="bg-gray-50 hover:bg-indigo-100 transition">
-            <td className="border border-indigo-300 px-4 py-2 font-semibold text-gray-700">Akhir</td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.I.akhir}
-                onChange={(e) => handleKeteranganChange("I", "akhir", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.S.akhir}
-                onChange={(e) => handleKeteranganChange("S", "akhir", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.III.akhir}
-                onChange={(e) => handleKeteranganChange("III", "akhir", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-          </tr>
-
-          <tr className="hover:bg-indigo-100 transition">
-            <td className="border border-indigo-300 px-4 py-2 font-semibold text-gray-700">Total</td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.I.total}
-                onChange={(e) => handleKeteranganChange("I", "total", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.S.total}
-                onChange={(e) => handleKeteranganChange("S", "total", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={keteranganData.III.total}
-                onChange={(e) => handleKeteranganChange("III", "total", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    {/* TABLE 2 */}
-    <div>
-      <h4 className="font-semibold text-sm text-gray-800 mb-3">Jadwal Maintenance Hourmeter</h4>
-      <table className="w-full border-collapse border border-indigo-300 text-slate-900">
-        <thead>
-          <tr className="bg-indigo-200">
-            <th className="border border-indigo-300 px-4 py-2 text-left font-bold text-sm text-gray-900">Pekerjaan</th>
-            <th className="border border-indigo-300 px-4 py-2 text-center font-bold text-sm text-gray-900">Terakhir</th>
-            <th className="border border-indigo-300 px-4 py-2 text-center font-bold text-sm text-gray-900">Akan Datang</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr className="hover:bg-indigo-100 transition">
-            <td className="border border-indigo-300 px-4 py-2 font-semibold text-gray-700">Ganti Oli Mesin</td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={JadwalData.Lalu.awal}
-                onChange={(e) => handleJadwalChange("Lalu", "awal", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={JadwalData.AkanDatang.awal}
-                onChange={(e) => handleJadwalChange("AkanDatang", "awal", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-          </tr>
-
-          <tr className="bg-gray-50 hover:bg-indigo-100 transition">
-            <td className="border border-indigo-300 px-4 py-2 font-semibold text-gray-700">Ganti Filter Oli</td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={JadwalData.Lalu.akhir}
-                onChange={(e) => handleJadwalChange("Lalu", "akhir", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={JadwalData.AkanDatang.akhir}
-                onChange={(e) => handleJadwalChange("AkanDatang", "akhir", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-          </tr>
-
-          <tr className="hover:bg-indigo-100 transition">
-            <td className="border border-indigo-300 px-4 py-2 font-semibold text-gray-700">Ganti Filter Solar</td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={JadwalData.Lalu.total}
-                onChange={(e) => handleJadwalChange("Lalu", "total", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-
-            <td className="border border-indigo-300 px-2 py-2">
-              <input
-                value={JadwalData.AkanDatang.total}
-                onChange={(e) => handleJadwalChange("AkanDatang", "total", e.target.value)}
-                className="w-full border border-indigo-300 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-</div>
 
           {/* LEVEL SOLAR */}
           <div className="bg-linear-to-br from-yellow-50 to-yellow-100 p-6 rounded-lg border-2 border-yellow-400">
@@ -657,7 +469,7 @@ const handleJadwalChange = (
             <h2 className="font-bold text-lg text-gray-900 mb-4 pb-3 border-b border-cyan-300">Pemeriksaan Item - Checklist</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {GENSET_ITEMS.map((item, index) => {
+              {inspectionItems.map((item, index) => {
                 const data = inspections.find(i => i.itemId === item.id)!
 
                 return (
@@ -709,10 +521,11 @@ const handleJadwalChange = (
           </div>
 
           <button 
-            type="submit" 
-            className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-lg transition transform hover:scale-105 active:scale-95 shadow-lg text-lg"
+            type="submit"
+            disabled={loading}
+            className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:cursor-not-allowed disabled:opacity-60 text-white font-bold py-3 px-6 rounded-lg transition transform hover:scale-105 active:scale-95 shadow-lg text-lg"
           >
-            💾 Simpan Laporan Genset
+            {loading ? "Menyimpan laporan..." : "💾 Simpan Laporan Genset"}
           </button>
 
         </form>

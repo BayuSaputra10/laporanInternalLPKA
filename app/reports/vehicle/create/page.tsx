@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Link from "next/link"
 import toast from "react-hot-toast"
 
 const VEHICLE_ITEMS = [
@@ -13,7 +14,8 @@ const VEHICLE_ITEMS = [
 export default function CreateVehicleReport() {
 
   const initialForm = {
-    vehicleName: "",
+    tanggal: "",
+    unit: "",
     kmAwal: "",
     kmAkhir: "",
     solarAwal: "",
@@ -22,6 +24,7 @@ export default function CreateVehicleReport() {
   }
 
   const [form, setForm] = useState(initialForm)
+  const [inspectionItems, setInspectionItems] = useState(VEHICLE_ITEMS)
   const [inspections, setInspections] = useState(
     VEHICLE_ITEMS.map(item => ({
       itemId: item.id,
@@ -31,6 +34,33 @@ export default function CreateVehicleReport() {
   )
   const [errors, setErrors] = useState<any>({})
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    async function loadInspectionItems() {
+      try {
+        const res = await fetch("/api/inspection-items?type=vehicle")
+        if (!res.ok) {
+          return
+        }
+
+        const data = await res.json()
+        if (Array.isArray(data) && data.length > 0) {
+          setInspectionItems(data)
+          setInspections(
+            data.map((item: any) => ({
+              itemId: item.id,
+              kondisi: "Normal",
+              keterangan: ""
+            }))
+          )
+        }
+      } catch (error) {
+        console.error("Failed to load vehicle inspection items", error)
+      }
+    }
+
+    loadInspectionItems()
+  }, [])
 
   const handleChange = (e: any) => {
     setForm({
@@ -53,7 +83,8 @@ export default function CreateVehicleReport() {
   const validate = () => {
     const newErrors: any = {}
 
-    if (!form.vehicleName) newErrors.vehicleName = "Wajib diisi"
+    if (!form.tanggal) newErrors.tanggal = "Wajib diisi"
+    if (!form.unit) newErrors.unit = "Wajib diisi"
     if (!form.kmAwal) newErrors.kmAwal = "Wajib diisi"
     if (!form.kmAkhir) newErrors.kmAkhir = "Wajib diisi"
     if (Number(form.kmAkhir) < Number(form.kmAwal)) {
@@ -85,11 +116,13 @@ export default function CreateVehicleReport() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          ...form,
+          tanggal: form.tanggal,
+          unit: form.unit,
           kmAwal: Number(form.kmAwal),
           kmAkhir: Number(form.kmAkhir),
           solarAwal: Number(form.solarAwal),
           solarAkhir: Number(form.solarAkhir),
+          catatan: form.catatan,
           inspections
         })
       })
@@ -100,7 +133,7 @@ export default function CreateVehicleReport() {
 
       setForm(initialForm)
       setInspections(
-        VEHICLE_ITEMS.map(item => ({
+        inspectionItems.map(item => ({
           itemId: item.id,
           kondisi: "Normal",
           keterangan: ""
@@ -119,21 +152,43 @@ export default function CreateVehicleReport() {
     <div className="min-h-screen bg-slate-700 p-6">
       <div className="max-w-2xl mx-auto bg-slate-400 p-6 rounded-2xl shadow">
 
-        <h1 className="text-2xl font-bold mb-6">Form Kendaraan</h1>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold">Form Kendaraan</h1>
+            <p className="text-sm text-slate-700">Tambah laporan kendaraan dengan informasi lengkap dan inspeksi.</p>
+          </div>
+          <Link href="/" className="inline-flex rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800">
+            ← Dashboard
+          </Link>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* NAMA */}
+          {/* TANGGAL */}
           <div>
+            <label className="block mb-2 text-sm font-semibold text-slate-800">Tanggal</label>
             <input
-              name="vehicleName"
-              value={form.vehicleName}
-              placeholder="Nama Kendaraan"
+              type="date"
+              name="tanggal"
+              value={form.tanggal}
               className="w-full border p-2 rounded"
               onChange={handleChange}
             />
-            {errors.vehicleName && (
-              <p className="text-red-500 text-sm">{errors.vehicleName}</p>
+            {errors.tanggal && <p className="text-red-500 text-sm mt-1">{errors.tanggal}</p>}
+          </div>
+
+          {/* NAMA */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-slate-800">Unit Kendaraan</label>
+            <input
+              name="unit"
+              value={form.unit}
+              placeholder="Unit Kendaraan"
+              className="w-full border p-2 rounded"
+              onChange={handleChange}
+            />
+            {errors.unit && (
+              <p className="text-red-500 text-sm">{errors.unit}</p>
             )}
           </div>
 
@@ -208,11 +263,11 @@ export default function CreateVehicleReport() {
           <div>
             <h2 className="font-semibold mb-2">Pemeriksaan Item</h2>
             <div className="space-y-3">
-              {VEHICLE_ITEMS.map((item, index) => (
+              {inspectionItems.map((item, index) => (
                 <div key={item.id} className="flex items-center gap-4 p-3 bg-white rounded-lg">
                   <span className="font-medium w-32">{item.name}</span>
                   <select
-                    value={inspections[index].kondisi}
+                    value={inspections[index]?.kondisi ?? "Normal"}
                     onChange={(e) => handleInspectionChange(index, 'kondisi', e.target.value)}
                     className="border p-1 rounded"
                   >
@@ -230,7 +285,7 @@ export default function CreateVehicleReport() {
                   </select>
                   <input
                     placeholder="Keterangan (opsional)"
-                    value={inspections[index].keterangan}
+                    value={inspections[index]?.keterangan ?? ""}
                     onChange={(e) => handleInspectionChange(index, 'keterangan', e.target.value)}
                     className="flex-1 border p-1 rounded"
                   />

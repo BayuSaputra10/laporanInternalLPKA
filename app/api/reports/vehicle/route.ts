@@ -14,6 +14,10 @@ export async function POST(req: Request) {
     const {
       tanggal,
       unit,
+      kmAwal,
+      kmAkhir,
+      solarAwal,
+      solarAkhir,
       catatan,
       inspections
     } = body
@@ -30,7 +34,18 @@ export async function POST(req: Request) {
       data: {
         tanggal: new Date(tanggal),
         unit: unit || null,
-        catatan: catatan || null
+        kmAwal: kmAwal !== undefined && kmAwal !== null ? Number(kmAwal) : null,
+        kmAkhir: kmAkhir !== undefined && kmAkhir !== null ? Number(kmAkhir) : null,
+        solarAwal: solarAwal !== undefined && solarAwal !== null ? Number(solarAwal) : null,
+        solarAkhir: solarAkhir !== undefined && solarAkhir !== null ? Number(solarAkhir) : null,
+        catatan: catatan || null,
+        inspections: inspections ? {
+          create: inspections.map((item: InspectionItem) => ({
+            itemId: item.itemId,
+            kondisi: item.kondisi,
+            keterangan: item.keterangan
+          }))
+        } : undefined
       }
     })
 
