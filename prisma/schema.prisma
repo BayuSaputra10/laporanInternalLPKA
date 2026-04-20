@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model VehicleReport {
+  id        Int      @id @default(autoincrement())
+  tanggal   DateTime
+  unit      String?
+  catatan   String?
+}
+
+
+
+model GensetReport {
+  id        Int      @id @default(autoincrement())
+  regu      String
+  tanggal   DateTime
+  mesin     String?
+  generator String?
+  shift     String?
+
+  speed     Float?
+  oliPress  Float?
+  temp      Float?
+
+  volt      Float?
+  hz        Float?
+  kw        Float?
+
+  ampereR   Float?
+  ampereS   Float?
+  ampereT   Float?
+  ampere    Float?
+
+  solarLevelAwal   Float?
+  solarLevelAkhir  Float?
+  solarPemakaian   Float?
+
+  gantiOliMesin    Float?
+  gantiFilterOli   Float?
+  gantiFilterSolar Float?
+
+  catatan   String?
+
+  inspections GensetInspection[]
+}
+
+
+model GensetInspection {
+  id         Int    @id @default(autoincrement())
+  reportId   Int
+  itemId     Int
+  kondisi    String
+  keterangan String?
+
+  report GensetReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}
+model Inspection {
+  id         Int @id @default(autoincrement())
+  reportId   Int
+  itemId     Int
+  kondisi    String
+  keterangan String?
+
+  item   InspectionItem @relation(fields: [itemId], references: [id])
+}
+
+model InspectionItem {
+  id     Int    @id @default(autoincrement())
+  name   String
+  type   String // vehicle / genset
+
+  inspections Inspection[]
+}

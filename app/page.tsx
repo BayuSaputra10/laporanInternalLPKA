@@ -1,65 +1,142 @@
-import Image from "next/image";
+import { prisma } from "@/lib/prisma"
+import Link from "next/link"
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+export default async function Dashboard() {
+
+    const gensetReports = await prisma.gensetReport.findMany({
+        take: 5,
+        orderBy: { id: "desc" }
+    })
+
+    const vehicleReports = await prisma.vehicleReport.findMany({
+        take: 5,
+        orderBy: { id: "desc" }
+    })
+
+    const totalGenset = await prisma.gensetReport.count()
+    const totalVehicle = await prisma.vehicleReport.count()
+
+    return (
+        <div className="min-h-screen bg-slate-100 p-6">
+
+            <h1 className="text-2xl font-bold mb-6 text-black flex items-center justify-center gap-2">
+                Dashboard Laporan Internal Genset & Kendaraan LPKA Bandar Lampung
+            </h1>
+
+            {/* SUMMARY */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="bg-green-500 text-white p-6 rounded-xl shadow">
+                    <p className="text-sm opacity-80">Total Genset</p>
+                    <h2 className="text-3xl font-bold">{totalGenset}</h2>
+                </div>
+
+                <div className="bg-blue-500 text-white p-6 rounded-xl shadow">
+                    <p className="text-sm opacity-80">Total Kendaraan</p>
+                    <h2 className="text-3xl font-bold">{totalVehicle}</h2>
+                </div>
+            </div>
+
+            {/* ACTION */}
+            <div className="flex gap-4 mb-8">
+                <Link href="/reports/genset/create" className="bg-green-600 text-white px-4 py-2 rounded">
+                    + Laporan Genset
+                </Link>
+
+                <Link href="/reports/vehicle/create" className="bg-blue-600 text-white px-4 py-2 rounded">
+                    + Laporan Kendaraan
+                </Link>
+            </div>
+
+            {/* ================= GENSET ================= */}
+            <div className="bg-white p-4 rounded-xl shadow mb-8">
+                <div className="flex justify-between mb-4">
+                    <h2 className="font-semibold text-lg text-green-700">
+                        Laporan Genset Terbaru
+                    </h2>
+
+                    <Link href="/reports/genset" className="text-sm text-green-600">
+                        Lihat Semua →
+                    </Link>
+                </div>
+
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="border-b text-left text-black">
+                            <th className="py-2">Tanggal</th>
+                            <th>Regu</th>
+                            <th>Catatan</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {gensetReports.length === 0 && (
+                            <tr>
+                                <td colSpan={3} className="text-center py-4 text-slate-950">
+                                    Belum ada data genset
+                                </td>
+                            </tr>
+                        )}
+
+                        {gensetReports.map((r) => (
+                            <tr key={r.id} className="border-b hover:bg-gray-50 text-black">
+                                <td className="py-2">
+                                    <Link href={`/reports/genset/${r.id}`} className="block w-full">
+                                        {new Date(r.tanggal).toLocaleDateString("id-ID")}
+                                    </Link>
+                                </td>
+                                <td>{r.regu}</td>
+                                <td>{r.catatan || "-"}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* ================= VEHICLE ================= */}
+            <div className="bg-white p-4 rounded-xl shadow">
+                <div className="flex justify-between mb-4">
+                    <h2 className="font-semibold text-lg text-blue-700">
+                        Laporan Kendaraan Terbaru
+                    </h2>
+
+                    <Link href="/reports/vehicle" className="text-sm text-blue-600">
+                        Lihat Semua →
+                    </Link>
+                </div>
+
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="border-b text-left">
+                            <th className="py-2">Tanggal</th>
+                            <th>Unit</th>
+                            <th>Catatan</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {vehicleReports.length === 0 && (
+                            <tr>
+                                <td colSpan={3} className="text-center py-4 text-gray-500">
+                                    Belum ada data kendaraan
+                                </td>
+                            </tr>
+                        )}
+
+                        {vehicleReports.map((r) => (
+                            <tr key={r.id} className="border-b hover:bg-gray-50">
+                                <td className="py-2">
+                                    <Link href={`/reports/vehicle/${r.id}`} className="block w-full">
+                                        {new Date(r.tanggal).toLocaleDateString("id-ID")}
+                                    </Link>
+                                </td>
+                                <td>{r.unit || "-"}</td>
+                                <td>{r.catatan || "-"}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    )
 }
