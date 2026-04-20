@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [vehicleReports, setVehicleReports] = useState<VehicleReport[]>([])
   const [totalGenset, setTotalGenset] = useState(0)
   const [totalVehicle, setTotalVehicle] = useState(0)
+
   const [loading, setLoading] = useState(true)
 
   // =========================
@@ -37,7 +38,7 @@ export default function Dashboard() {
   }
 
   // =========================
-  // REALTIME POLLING (SAFE)
+  // REALTIME POLLING SAFE
   // =========================
   useEffect(() => {
     let isMounted = true
@@ -60,18 +61,23 @@ export default function Dashboard() {
   }, [])
 
   // =========================
-  // LOADING STATE
+  // LOADING STATE (INI PENGGANTI loading.tsx)
   // =========================
   if (loading) {
     return (
-      <div className="p-6 text-black">
-        Loading dashboard...
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 font-medium">
+            Memuat dashboard...
+          </p>
+        </div>
       </div>
     )
   }
 
   // =========================
-  // UI
+  // UI DASHBOARD
   // =========================
   return (
     <div className="min-h-screen bg-slate-100 p-6">
@@ -127,7 +133,6 @@ export default function Dashboard() {
         {/* ================= GENSET ================= */}
         <div className="bg-white rounded-xl shadow mb-6 p-4">
 
-          {/* HEADER */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-bold text-green-600">
               Genset Terbaru
@@ -148,7 +153,7 @@ export default function Dashboard() {
           {gensetReports.map((r) => (
             <div
               key={r.id}
-              className="border-b py-2 flex justify-between items-center text-black"
+              className="border-b py-2 flex justify-between text-black"
             >
               <div>
                 {new Date(r.tanggal).toLocaleDateString("id-ID")} - {r.regu}
@@ -168,7 +173,6 @@ export default function Dashboard() {
         {/* ================= VEHICLE ================= */}
         <div className="bg-white rounded-xl shadow p-4">
 
-          {/* HEADER */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-bold text-blue-600">
               Vehicle Terbaru
@@ -189,7 +193,7 @@ export default function Dashboard() {
           {vehicleReports.map((r) => (
             <div
               key={r.id}
-              className="border-b py-2 flex justify-between items-center text-black"
+              className="border-b py-2 flex justify-between text-black"
             >
               <div>
                 {new Date(r.tanggal).toLocaleDateString("id-ID")} - {r.jenisKendaraan}
