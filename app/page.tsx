@@ -1,80 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
 
-import { useEffect, useState } from "react"
+
 import Link from "next/link"
+import { prisma } from "@/lib/prisma"
+import type { GensetReport, VehicleReport } from "@/lib/types"
 
-type GensetReport = any
-type VehicleReport = any
+async function getDashboardData() {
+  const gensetReports = await prisma.gensetReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
 
-export default function Dashboard() {
-  const [gensetReports, setGensetReports] = useState<GensetReport[]>([])
-  const [vehicleReports, setVehicleReports] = useState<VehicleReport[]>([])
-  const [totalGenset, setTotalGenset] = useState(0)
-  const [totalVehicle, setTotalVehicle] = useState(0)
+  const vehicleReports = await prisma.vehicleReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
 
-  const [loading, setLoading] = useState(true)
+  const totalGenset = await prisma.gensetReport.count()
+  const totalVehicle = await prisma.vehicleReport.count()
 
-  // =========================
-  // FETCH DATA
-  // =========================
-  const fetchData = async () => {
-    try {
-      const res = await fetch("/api/dashboard", {
-        cache: "no-store"
-      })
-
-      const data = await res.json()
-
-      setGensetReports(data.gensetReports)
-      setVehicleReports(data.vehicleReports)
-      setTotalGenset(data.totalGenset)
-      setTotalVehicle(data.totalVehicle)
-
-      setLoading(false)
-    } catch (err) {
-      console.error("Dashboard fetch error:", err)
-    }
+  return {
+    gensetReports,
+    vehicleReports,
+    totalGenset,
+    totalVehicle
   }
+}
 
-  // =========================
-  // REALTIME POLLING SAFE
-  // =========================
-  useEffect(() => {
-    let isMounted = true
+export default async function Page() {
+  const data = await getDashboardData()
 
-    const run = async () => {
-      if (!isMounted) return
-      await fetchData()
-    }
-
-    run()
-
-    const interval = setInterval(() => {
-      run()
-    }, 5000)
-
-    return () => {
-      isMounted = false
-      clearInterval(interval)
-    }
-  }, [])
-
-  // =========================
-  // LOADING STATE (INI PENGGANTI loading.tsx)
-  // =========================
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">
-            Memuat dashboard...
-          </p>
-        </div>
-      </div>
-    )
-  }
 
   // =========================
   // UI DASHBOARD
@@ -88,7 +43,7 @@ export default function Dashboard() {
           Realtime Dashboard Laporan
         </h1>
         <p className="text-gray-500 text-sm">
-          Auto update setiap 5 detik
+Refresh page (F5) untuk update terbaru
         </p>
       </div>
 
@@ -100,14 +55,14 @@ export default function Dashboard() {
           <div className="bg-white p-6 rounded-xl shadow">
             <p className="text-gray-500">Total Genset</p>
             <h2 className="text-3xl font-bold text-green-600">
-              {totalGenset}
+{data.totalGenset}
             </h2>
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow">
             <p className="text-gray-500">Total Kendaraan</p>
             <h2 className="text-3xl font-bold text-blue-600">
-              {totalVehicle}
+{data.totalVehicle}
             </h2>
           </div>
 
@@ -146,11 +101,11 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {gensetReports.length === 0 && (
+{data.gensetReports.length === 0 && (
             <p className="text-gray-400">Belum ada data genset</p>
           )}
 
-          {gensetReports.map((r) => (
+{data.gensetReports.map((r) => (
             <div
               key={r.id}
               className="border-b py-2 flex justify-between text-black"
@@ -186,11 +141,11 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {vehicleReports.length === 0 && (
+{data.vehicleReports.length === 0 && (
             <p className="text-gray-400">Belum ada data kendaraan</p>
           )}
 
-          {vehicleReports.map((r) => (
+{data.vehicleReports.map((r) => (
             <div
               key={r.id}
               className="border-b py-2 flex justify-between text-black"
