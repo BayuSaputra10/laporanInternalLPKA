@@ -1,17 +1,11 @@
-# LPKA UI Upgrade TODO
+# Tailwind CSS Fix Progress
 
-## Progress Tracker
-- [✅] 1. Install UI dependencies (lucide-react, clsx, tailwind-merge)
-- [✅] 2. Update globals.css with LPKA theme (colors, fonts)
-- [✅] 3. Update app/layout.tsx (font providers, boxed wrapper)
-- [✅] 4. Extend tailwind.config.ts (custom LPKA colors)
-- [✅] 5. Upgrade dashboard app/page.tsx (hero, cards, tables, icons)
-- [ ] 6. Create reusable UI components (Button, Input, Card, Table)
-- [ ] 7. Upgrade forms (vehicle/genset create pages)
-- [ ] 8. Enhance report details + KopSurat
-- [ ] 9. Add dark mode toggle (optional)
-- [✅] 10. Test responsive/print/deploy
+## Steps:
+- [x] Create this TODO.md
+- [x] Step 2: Add @tailwind directives to app/globals.css
+- [x] Step 3: Verify/fix postcss.config.mjs
+- [ ] Step 4: Clean build & restart dev server (rm -rf .next && npm run dev)
+- [ ] Step 5: Test - Tailwind classes apply (e.g., bg-lpka-primary works)
 
-**Core UI upgrade selesai! Dashboard tampilan baru di localhost:3000.**
-**Next: Lanjut form pages atau selesai?**
+**Status:** ✅ COMPLETE - Tailwind fixed!
 

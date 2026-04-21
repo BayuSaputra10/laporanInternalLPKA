@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
-@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  /* LPKA Theme */
   --lpka-primary: #1e40af;
   --lpka-primary-fg: #ffffff;
   --lpka-green: #047857;
@@ -14,15 +17,6 @@
   --lpka-bg: #f8fafc;
   --lpka-border: #e2e8f0;
   --lpka-fg: #1e293b;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-heading, 'Playfair Display', Georgia, serif);
-  --font-body: var(--font-body, 'Poppins', Inter, sans-serif);
 }
 
 @media (prefers-color-scheme: dark) {
