@@ -27,6 +27,8 @@ async function getDashboardData() {
   }
 }
 
+export const revalidate = 0
+
 export default async function Page() {
   const data = await getDashboardData()
 
