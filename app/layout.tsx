@@ -3,8 +3,8 @@ import { Toaster } from "react-hot-toast"
 import { Analytics } from "@vercel/analytics/next"
 
 export const metadata = {
-  title: "Laporan Internal",
-  description: "Aplikasi laporan pemeriksaan kendaraan & genset"
+  title: "Sistem Laporan Internal LPKA Kelas II Bandar Lampung",
+  description: "Aplikasi manajemen laporan pemeriksaan kendaraan & genset harian"
 }
 
 export default function RootLayout({
@@ -14,25 +14,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body className="bg-slate-100">
+      <body className="bg-lpka-bg antialiased font-body">
 
-        {children}
+        <main className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8 min-h-screen">
+          {children}
+        </main>
 
         {/* 🔥 TOAST GLOBAL */}
         <Toaster
           position="top-right"
           toastOptions={{
-            duration: 3000,
+            duration: 4000,
             style: {
-              background: "#1e293b", // slate-800
+              background: "rgb(30 64 175)", // lpka-primary
               color: "#fff",
-              borderRadius: "10px",
-              padding: "12px 16px",
-              fontSize: "14px"
+              borderRadius: "0.5rem",
+              padding: "16px 20px",
+              fontSize: "14px",
+              fontFamily: "var(--font-body)",
             },
             success: {
               style: {
-                background: "#16a34a", // green-600
+                background: "rgb(4 120 87)", // lpka-green
               },
             },
             error: {
@@ -42,8 +45,9 @@ export default function RootLayout({
             },
           }}
         />
-
+        <Analytics />
       </body>
     </html>
   )
 }
+

@@ -1,40 +1,17 @@
-# Prisma db push stuck fix plan
-## Completed:
-1. User: Stop stuck terminals (Ctrl+C on `db pull`)
-2. Edit lib/prisma.ts (remove datasourceUrl) ✅
+# LPKA UI Upgrade TODO
 
-## Completed:
-1. User: Stop stuck terminals (Ctrl+C on `db pull`)
-2. Edit lib/prisma.ts (remove datasourceUrl) ✅
-3. Update Prisma (`npm i prisma@latest @prisma/client@latest`) running...
+## Progress Tracker
+- [✅] 1. Install UI dependencies (lucide-react, clsx, tailwind-merge)
+- [✅] 2. Update globals.css with LPKA theme (colors, fonts)
+- [✅] 3. Update app/layout.tsx (font providers, boxed wrapper)
+- [✅] 4. Extend tailwind.config.ts (custom LPKA colors)
+- [✅] 5. Upgrade dashboard app/page.tsx (hero, cards, tables, icons)
+- [ ] 6. Create reusable UI components (Button, Input, Card, Table)
+- [ ] 7. Upgrade forms (vehicle/genset create pages)
+- [ ] 8. Enhance report details + KopSurat
+- [ ] 9. Add dark mode toggle (optional)
+- [✅] 10. Test responsive/print/deploy
 
-## Completed:
-1. Stop stuck terminals ✅
-2. lib/prisma.ts cleaned ✅
-3. Prisma updated to latest ✅
+**Core UI upgrade selesai! Dashboard tampilan baru di localhost:3000.**
+**Next: Lanjut form pages atau selesai?**
 
-## Completed:
-1. Stop stuck terminals ✅
-2. lib/prisma.ts cleaned ✅
-3. Prisma 7.7.0 updated ✅
-4. schema.prisma Prisma 7 compatible ✅
-
-## Completed:
-1. Prisma 7 migration: schema.prisma url removed ✅
-2. prisma.config.ts created (placeholder for future) ✅
-3. lib/prisma.ts datasourceUrl added for client ✅
-
-## Pending:
-1. Add `?pgbouncer=true&prepare_threshold=0` to DATABASE_URL in .env
-2. `npx prisma db push`
-3. `npx prisma generate`
-4. `npx prisma db push` (with pool params)
-5. `npm run dev`
-2. Update DATABASE_URL: add `?pgbouncer=true&prepare_threshold=0` (Supabase settings)
-3. `npx prisma migrate dev --name fix` or `db push`
-4. `npx prisma generate`
-5. Test app
-4. Update DATABASE_URL: add `?pgbouncer=true&prepare_threshold=0`
-5. `npx prisma migrate dev --name fix` or `db push`
-6. `npx prisma generate`
-7. Test app

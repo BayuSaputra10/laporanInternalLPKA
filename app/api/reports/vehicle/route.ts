@@ -21,6 +21,16 @@ export async function POST(req: Request) {
     const photo = formData.get("photo") as File | null
 
     // =========================
+    // PHOTO VALIDATION - HANYA GAMBAR
+    // =========================
+    if (photo && !photo.type.startsWith('image/')) {
+      return NextResponse.json(
+        { success: false, message: "Hanya file foto yang diizinkan untuk upload" },
+        { status: 400 }
+      )
+    }
+
+    // =========================
     // DEBUG LOG (WAJIB DI VERCEL)
     // =========================
     console.log("VEHICLE PAYLOAD:", {

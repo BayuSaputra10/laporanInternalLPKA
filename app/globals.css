@@ -1,8 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* LPKA Theme */
+  --lpka-primary: #1e40af;
+  --lpka-primary-fg: #ffffff;
+  --lpka-green: #047857;
+  --lpka-green-fg: #ffffff;
+  --lpka-gold: #d97706;
+  --lpka-gold-fg: #ffffff;
+  --lpka-bg: #f8fafc;
+  --lpka-border: #e2e8f0;
+  --lpka-fg: #1e293b;
 }
 
 @theme inline {
@@ -10,6 +21,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-heading, 'Playfair Display', Georgia, serif);
+  --font-body: var(--font-body, 'Poppins', Inter, sans-serif);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,7 +33,20 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--lpka-bg, #f8fafc);
+  color: var(--lpka-fg, #1e293b);
+  font-family: var(--font-body, 'Poppins', Inter, system-ui, sans-serif);
+  line-height: 1.6;
 }
+
+/* Print Styles for Official Reports */
+@media print {
+  body { 
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+  .no-print { display: none !important; }
+  .shadow, .rounded, .bg-white { box-shadow: none !important; border-radius: 0 !important; background: white !important; }
+}
+
