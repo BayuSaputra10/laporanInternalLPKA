@@ -4,7 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -31,6 +30,35 @@ body {
   color: var(--lpka-fg, #1e293b);
   font-family: var(--font-body, 'Poppins', Inter, system-ui, sans-serif);
   line-height: 1.6;
+}
+
+/* Loading Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.progress-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 0%, rgba(30, 64, 175, 0.2) 50%, #f3f4f6 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.float-subtle {
+  animation: float-subtle 3s ease-in-out infinite;
 }
 
 /* Print Styles for Official Reports */

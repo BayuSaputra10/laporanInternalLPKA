@@ -1,11 +1,14 @@
 import "./globals.css"
 import { Toaster } from "react-hot-toast"
 import { Analytics } from "@vercel/analytics/next"
+import Navbar from "@/app/components/Navbar"
 
 export const metadata = {
   title: "Sistem Laporan Internal LPKA Kelas II Bandar Lampung",
   description: "Aplikasi manajemen laporan pemeriksaan kendaraan & genset harian"
 }
+
+
 
 export default function RootLayout({
   children,
@@ -13,10 +16,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="id">
-      <body className="bg-lpka-bg antialiased font-body">
-
-        <main className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8 min-h-screen">
+    <html lang="id" className="scroll-smooth">
+      <body className="bg-lpka-bg antialiased font-body min-h-screen">
+        <Navbar />
+        
+        
+        <main className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           {children}
         </main>
 
@@ -28,10 +33,11 @@ export default function RootLayout({
             style: {
               background: "rgb(30 64 175)", // lpka-primary
               color: "#fff",
-              borderRadius: "0.5rem",
-              padding: "16px 20px",
-              fontSize: "14px",
+              borderRadius: "1rem",
+              padding: "16px 24px",
+              fontSize: "15px",
               fontFamily: "var(--font-body)",
+              boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
             },
             success: {
               style: {

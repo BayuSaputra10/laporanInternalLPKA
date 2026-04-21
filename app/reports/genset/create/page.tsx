@@ -33,9 +33,9 @@ export default function CreateGensetReport() {
   const [errors, setErrors] = useState<Errors>({})
   const [submitting, setSubmitting] = useState(false)
 
-  const inputClass = 'w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition'
+  const inputClass = 'w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lpka-green/50 focus:border-lpka-green shadow-sm hover:shadow-md transition-all md:px-6 md:py-4'
 
-  const labelClass = 'text-sm font-semibold text-gray-700'
+  const labelClass = 'block text-sm font-semibold text-gray-800 mb-2 md:text-base md:mb-3'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target
@@ -173,93 +173,96 @@ export default function CreateGensetReport() {
       : null
 
   return (
-    <div className='min-h-screen bg-slate-900 flex items-center justify-center p-6'>
-      <div className='w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden'>
+    <div className=''>
+      <div className='fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(34,197,94,0.3),transparent),radial-gradient(circle_at_80%_20%,rgba(120,200,255,0.2),transparent),radial-gradient(circle_at_50%_50%,rgba(34,197,94,0.2),transparent)] pointer-events-none animate-pulse' />
+      <div className='relative z-10 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8'>
+        <div className='w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden mx-auto'>
 
-        {/* HEADER */}
-        <div className='bg-gradient-to-r from-green-600 to-green-700 p-6 text-white'>
-          <h1 className='text-2xl font-bold'>📋 Laporan Genset</h1>
-          <p className='text-green-100 text-sm'>Input data operasional harian</p>
+          {/* HEADER */}
+          <div className='bg-gradient-to-r from-lpka-green/95 to-green-700 p-6 sm:p-8 text-white'>
+            <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight'>📋 Laporan Genset</h1>
+            <p className='text-green-100 text-sm sm:text-base md:text-lg mt-2 opacity-90'>Input data operasional harian</p>
+          </div>
+
+          {/* FORM */}
+          <form onSubmit={handleSubmit} className='p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8'>
+
+            {/* BASIC */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+              <div>
+                <label className={labelClass}>Regu *</label>
+                <input name='regu' value={form.regu} onChange={handleChange} className={inputClass} />
+                {errors.regu && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.regu}</p>}
+              </div>
+
+              <div>
+                <label className={labelClass}>Tanggal *</label>
+                <input type='date' name='tanggal' value={form.tanggal} onChange={handleChange} className={inputClass} />
+                {errors.tanggal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.tanggal}</p>}
+              </div>
+            </div>
+
+            <div>
+              <label className={labelClass}>Waktu Pemakaian (Jam) *</label>
+              <input type='number' name='waktuPemakaianJam' value={form.waktuPemakaianJam ?? ''} onChange={handleChange} className={inputClass} />
+              {errors.waktuPemakaianJam && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.waktuPemakaianJam}</p>}
+            </div>
+
+            {/* HOUR METER */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+              <div>
+                <label className={labelClass}>HM Awal *</label>
+                <input type='number' name='hourMeterAwal' value={form.hourMeterAwal ?? ''} onChange={handleChange} className={inputClass} />
+                {errors.hourMeterAwal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.hourMeterAwal}</p>}
+              </div>
+
+              <div>
+                <label className={labelClass}>HM Akhir *</label>
+                <input type='number' name='hourMeterAkhir' value={form.hourMeterAkhir ?? ''} onChange={handleChange} className={inputClass} />
+                {errors.hourMeterAkhir && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.hourMeterAkhir}</p>}
+              </div>
+            </div>
+
+            {/* SOLAR */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+              <div>
+                <label className={labelClass}>Solar Awal (%) *</label>
+                <input type='number' name='solarLevelAwal' value={form.solarLevelAwal ?? ''} onChange={handleChange} className={inputClass} />
+                {errors.solarLevelAwal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.solarLevelAwal}</p>}
+              </div>
+
+              <div>
+                <label className={labelClass}>Solar Akhir (%) *</label>
+                <input type='number' name='solarLevelAkhir' value={form.solarLevelAkhir ?? ''} onChange={handleChange} className={inputClass} />
+                {errors.solarLevelAkhir && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.solarLevelAkhir}</p>}
+              </div>
+            </div>
+
+            {solarPreview != null && (
+              <div className='p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 text-green-800 text-sm sm:text-base md:text-lg font-semibold shadow-lg border border-green-200'>
+                Pemakaian Solar: <span className='text-xl sm:text-2xl md:text-3xl font-black'>{solarPreview}%</span>
+              </div>
+            )}
+
+            {/* FILE */}
+            <div>
+              <label className={labelClass}>Upload Foto *</label>
+              <input type='file' name='photo' accept='image/*' onChange={handleChange} className="w-full mt-2 p-3 border-2 border-dashed border-lpka-green/30 rounded-xl bg-lpka-green/5 text-sm sm:text-base file:mr-4 file:py-2 sm:file:py-3 file:px-4 sm:file:px-6 file:rounded-xl file:border-0 file:font-semibold file:bg-lpka-green file:text-white hover:file:bg-lpka-green/90 hover:border-lpka-green/50 transition-all cursor-pointer" />
+              {errors.photo && <p className='text-red-500 text-xs sm:text-sm mt-2 font-medium'>{errors.photo}</p>}
+            </div>
+
+            {/* BUTTON */}
+            <button
+              disabled={submitting}
+              className='w-full bg-gradient-to-r from-lpka-green to-green-600 hover:from-lpka-green/90 hover:to-green-600/90 text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-lpka-green/50'
+            >
+              {submitting ? 'Menyimpan Laporan...' : '🔋 Simpan Laporan Genset'}
+            </button>
+
+          </form>
         </div>
-
-        {/* FORM */}
-        <form onSubmit={handleSubmit} className='p-6 space-y-6'>
-
-          {/* BASIC */}
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div>
-              <label className={labelClass}>Regu *</label>
-              <input name='regu' value={form.regu} onChange={handleChange} className={inputClass}/>
-              {errors.regu && <p className='text-red-500 text-xs mt-1'>{errors.regu}</p>}
-            </div>
-
-            <div>
-              <label className={labelClass}>Tanggal *</label>
-              <input type='date' name='tanggal' value={form.tanggal} onChange={handleChange} className={inputClass}/>
-              {errors.tanggal && <p className='text-red-500 text-xs mt-1'>{errors.tanggal}</p>}
-            </div>
-          </div>
-
-          {/* JAM */}
-          <div>
-            <label className={labelClass}>Waktu Pemakaian (Jam) *</label>
-            <input type='number' name='waktuPemakaianJam' value={form.waktuPemakaianJam ?? ''} onChange={handleChange} className={inputClass}/>
-            {errors.waktuPemakaianJam && <p className='text-red-500 text-xs mt-1'>{errors.waktuPemakaianJam}</p>}
-          </div>
-
-          {/* HOUR METER */}
-          <div className='grid grid-cols-2 gap-4'>
-            <div>
-              <label className={labelClass}>HM Awal *</label>
-              <input type='number' name='hourMeterAwal' value={form.hourMeterAwal ?? ''} onChange={handleChange} className={inputClass}/>
-              {errors.hourMeterAwal && <p className='text-red-500 text-xs mt-1'>{errors.hourMeterAwal}</p>}
-            </div>
-
-            <div>
-              <label className={labelClass}>HM Akhir *</label>
-              <input type='number' name='hourMeterAkhir' value={form.hourMeterAkhir ?? ''} onChange={handleChange} className={inputClass}/>
-              {errors.hourMeterAkhir && <p className='text-red-500 text-xs mt-1'>{errors.hourMeterAkhir}</p>}
-            </div>
-          </div>
-
-          {/* SOLAR */}
-          <div className='grid grid-cols-2 gap-4'>
-            <div>
-              <label className={labelClass}>Solar Awal (%) *</label>
-              <input type='number' name='solarLevelAwal' value={form.solarLevelAwal ?? ''} onChange={handleChange} className={inputClass}/>
-              {errors.solarLevelAwal && <p className='text-red-500 text-xs mt-1'>{errors.solarLevelAwal}</p>}
-            </div>
-
-            <div>
-              <label className={labelClass}>Solar Akhir (%) *</label>
-              <input type='number' name='solarLevelAkhir' value={form.solarLevelAkhir ?? ''} onChange={handleChange} className={inputClass}/>
-              {errors.solarLevelAkhir && <p className='text-red-500 text-xs mt-1'>{errors.solarLevelAkhir}</p>}
-            </div>
-          </div>
-
-          {solarPreview != null && (
-            <div className='bg-green-50 text-green-700 p-3 rounded-lg text-sm'>
-              Pemakaian Solar: <strong>{solarPreview}%</strong>
-            </div>
-          )}
-
-          {/* FILE */}
-          <div>
-            <label className={labelClass}>Upload Foto *</label>
-            <input type='file' name='photo' accept='image/*' onChange={handleChange} />
-            {errors.photo && <p className='text-red-500 text-xs mt-1'>{errors.photo}</p>}
-          </div>
-
-          {/* BUTTON */}
-          <button
-            disabled={submitting}
-            className='w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition'
-          >
-            {submitting ? 'Menyimpan...' : 'Simpan Laporan'}
-          </button>
-
-        </form>
       </div>
     </div>
   )
 }
+

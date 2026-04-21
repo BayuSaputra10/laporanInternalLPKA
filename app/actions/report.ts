@@ -18,8 +18,9 @@ export async function deleteReport(id: number, type: "genset" | "vehicle") {
       throw new Error(`Invalid report type: ${type}`)
     }
 
+    revalidatePath("/reports/vehicle")
+    revalidatePath("/reports/genset")
     revalidatePath("/")
-    redirect("/")
   } catch (error) {
     console.error("Error deleting report:", error)
     throw new Error(`Failed to delete ${type} report: ${error instanceof Error ? error.message : String(error)}`)
