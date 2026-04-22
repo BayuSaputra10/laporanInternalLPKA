@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 'use client'
 
 export default function Error({
@@ -26,7 +27,7 @@ export default function Error({
           <p className="text-sm text-red-800">
             💡 Kemungkinan masalah:
             <ul className="mt-2 list-disc list-inside space-y-1">
-              <li>Database belum ter-setup di Vercel</li>
+
               <li>Environment variable DATABASE_URL tidak ter-set</li>
               <li>Migrations belum berjalan</li>
             </ul>

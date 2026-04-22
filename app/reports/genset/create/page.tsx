@@ -157,13 +157,13 @@ export default function CreateGensetReport() {
       const data = await res.json()
 
       if (res.ok && data.success) {
-        toast.success('✅ Berhasil!')
+        toast.success('Berhasil!')
         router.push('/')
       } else {
-        toast.error(data.message || '❌ Gagal')
+        toast.error(data.message || 'Gagal')
       }
     } catch {
-      toast.error('❌ Error jaringan')
+      toast.error('Error jaringan')
     } finally {
       setSubmitting(false)
     }

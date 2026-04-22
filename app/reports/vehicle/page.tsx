@@ -201,10 +201,10 @@ function VehiclePage() {
                                 if (confirm(`Hapus laporan kendaraan "${r.jenisKendaraan}" tanggal ${new Date(r.tanggal).toLocaleDateString("id-ID")}?`)) {
                                   try {
                                     await deleteReport(r.id, "vehicle")
-                                    toast.success("✅ Laporan berhasil dihapus!")
+                                    toast.success("Laporan berhasil dihapus!")
                                     window.location.reload()
                                   } catch (error) {
-                                    toast.error("❌ Gagal menghapus laporan")
+                                    toast.error("Gagal menghapus laporan")
                                   }
                                 }
                               }}

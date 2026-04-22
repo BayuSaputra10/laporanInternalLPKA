@@ -43,7 +43,7 @@ export default function CreateVehicleReport() {
     if (name === 'photo') {
       const file = files?.[0] || null
       if (file && !file.type.startsWith('image/')) {
-        toast.error('❌ Hanya file foto yang diizinkan (jpg, png, gif, etc.)')
+        toast.error('Hanya file foto yang diizinkan (jpg, png, gif, etc.)')
         return
       }
       setForm(prev => ({ ...prev, photo: file }))
@@ -92,7 +92,7 @@ export default function CreateVehicleReport() {
     const validationErrors = validate()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
-      toast.error('⚠️ Mohon lengkapi data yang kurang')
+      toast.error('Mohon lengkapi data yang kurang')
       return
     }
 
@@ -117,13 +117,13 @@ export default function CreateVehicleReport() {
       const data = await res.json()
 
       if (res.ok && data.success) {
-        toast.success('✅ Laporan kendaraan berhasil dibuat!')
+        toast.success('Laporan kendaraan berhasil dibuat!')
         router.push('/')
       } else {
-        toast.error(data.message || '❌ Gagal membuat laporan kendaraan')
+        toast.error(data.message || 'Gagal membuat laporan kendaraan')
       }
     } catch {
-      toast.error('❌ Kesalahan jaringan')
+      toast.error('Kesalahan jaringan')
     } finally {
       setSubmitting(false)
     }

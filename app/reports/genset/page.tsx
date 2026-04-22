@@ -187,10 +187,10 @@ function GensetPage() {
                                 if (confirm(`Hapus laporan genset "${r.regu}" tanggal ${new Date(r.tanggal).toLocaleDateString("id-ID")}?`)) {
                                   try {
                                     await deleteReport(r.id, "genset")
-                                    toast.success("✅ Laporan berhasil dihapus!")
+                                    toast.success("Laporan berhasil dihapus!")
                                     window.location.reload()
                                   } catch (error) {
-                                    toast.error("❌ Gagal menghapus laporan")
+                                    toast.error("Gagal menghapus laporan")
                                   }
                                 }
                               }}
