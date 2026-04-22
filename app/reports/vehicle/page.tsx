@@ -106,7 +106,7 @@ function VehiclePage() {
       </header>
 
       {/* CONTENT */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-full sm:max-w-4xl lg:max-w-6xl mx-auto px-2 sm:px-4 lg:px-6 lg:px-8">
         
         {data.length === 0 && !loading ? (
           <div className="text-center py-20">
@@ -121,102 +121,106 @@ function VehiclePage() {
           </div>
         ) : (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-lpka-primary/20 overflow-hidden">
-            <div className="px-6 py-4 bg-gradient-to-r from-lpka-primary/10 to-transparent border-b border-lpka-primary/20">
-              <h2 className="font-heading text-xl font-bold text-lpka-primary">
+            <div className="px-3 sm:px-6 py-4 bg-gradient-to-r from-lpka-primary/10 to-transparent border-b border-lpka-primary/20">
+              <h2 className="font-heading text-lg sm:text-xl font-bold text-lpka-primary">
                 {pagination.totalCount || 0} Laporan Ditemukan
               </h2>
             </div>
-            <table className="w-full">
-              <thead className="bg-lpka-primary/5">
-                <tr>
-                  <SortableHeader
-                    label="Tanggal"
-                    sortBy="tanggal"
-                    currentSortBy={sortBy}
-                    currentSortDir={sortDir as 'asc' | 'desc'}
-                    basePath={basePath}
-                    color="primary"
-                  />
-                  <SortableHeader
-                    label="Kendaraan"
-                    sortBy="jenisKendaraan"
-                    currentSortBy={sortBy}
-                    currentSortDir={sortDir as 'asc' | 'desc'}
-                    basePath={basePath}
-                    otherParams={`page=${page}`}
-                    color="primary"
-                  />
-                  <SortableHeader
-                    label="Keperluan"
-                    sortBy="keperluan"
-                    currentSortBy={sortBy}
-                    currentSortDir={sortDir as 'asc' | 'desc'}
-                    basePath={basePath}
-                    otherParams={`page=${page}`}
-                    color="primary"
-                  />
-                  <SortableHeader
-                    label="KM"
-                    sortBy="kmAkhir"
-                    currentSortBy={sortBy}
-                    currentSortDir={sortDir as 'asc' | 'desc'}
-                    basePath={basePath}
-                    otherParams={`page=${page}`}
-                    color="primary"
-                  />
-                  <th className="px-6 py-4 text-right font-semibold text-lpka-primary text-sm uppercase tracking-wider">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {data.map((r: Report) => (
-                  <tr key={r.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {new Date(r.tanggal).toLocaleDateString("id-ID")}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-                      {r.jenisKendaraan}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {r.keperluan}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {r.kmAwal} → {r.kmAkhir}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                      <Link
-                        href={`/reports/vehicle/${r.id}`}
-                        className="group inline-flex items-center gap-2 bg-lpka-primary/10 hover:bg-lpka-primary/20 text-lpka-primary px-4 py-2 rounded-lg font-semibold hover:shadow-md transition-all"
-                      >
-                        Lihat Detail
-                        <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                      <form action={deleteReport.bind(null, r.id, "vehicle")} className="inline">
-                        <button
-                          type="submit"
-                          formAction={async () => {
-                            if (confirm(`Hapus laporan kendaraan "${r.jenisKendaraan}" tanggal ${new Date(r.tanggal).toLocaleDateString("id-ID")}?`)) {
-                              try {
-                                await deleteReport(r.id, "vehicle")
-                                toast.success("✅ Laporan berhasil dihapus!")
-                                window.location.reload()
-                              } catch (error) {
-                                toast.error("❌ Gagal menghapus laporan")
-                              }
-                            }
-                          }}
-                          className="group inline-flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-700 hover:text-red-600 hover:border-red-500/50 px-4 py-2 rounded-lg font-semibold hover:shadow-md transition-all text-sm"
-                        >
-                          Hapus
-                          <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        </button>
-                      </form>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[500px]">
+                <thead className="bg-lpka-primary/5">
+                  <tr>
+                    <SortableHeader
+                      label="Tanggal"
+                      sortBy="tanggal"
+                      currentSortBy={sortBy}
+                      currentSortDir={sortDir as 'asc' | 'desc'}
+                      basePath={basePath}
+                      color="primary"
+                    />
+                    <SortableHeader
+                      label="Kendaraan"
+                      sortBy="jenisKendaraan"
+                      currentSortBy={sortBy}
+                      currentSortDir={sortDir as 'asc' | 'desc'}
+                      basePath={basePath}
+                      otherParams={`page=${page}`}
+                      color="primary"
+                    />
+                    <SortableHeader
+                      label="Keperluan"
+                      sortBy="keperluan"
+                      currentSortBy={sortBy}
+                      currentSortDir={sortDir as 'asc' | 'desc'}
+                      basePath={basePath}
+                      otherParams={`page=${page}`}
+                      color="primary"
+                    />
+                    <SortableHeader
+                      label="KM"
+                      sortBy="kmAkhir"
+                      currentSortBy={sortBy}
+                      currentSortDir={sortDir as 'asc' | 'desc'}
+                      basePath={basePath}
+                      otherParams={`page=${page}`}
+                      color="primary"
+                    />
+                    <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-right font-semibold text-lpka-primary text-xs sm:text-sm uppercase tracking-wider">
+                      Aksi
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {data.map((r: Report) => (
+                    <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium text-gray-900">
+                        {new Date(r.tanggal).toLocaleDateString("id-ID")}
+                      </td>
+                      <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700 font-medium">
+                        {r.jenisKendaraan}
+                      </td>
+                      <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
+                        {r.keperluan}
+                      </td>
+                      <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
+                        {r.kmAwal} → {r.kmAkhir}
+                      </td>
+                      <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium">
+                        <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 justify-end">
+                          <Link
+                            href={`/reports/vehicle/${r.id}`}
+                            className="group flex items-center gap-1 sm:gap-2 bg-lpka-primary/10 hover:bg-lpka-primary/20 text-lpka-primary px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm rounded-lg font-semibold hover:shadow-md transition-all w-full sm:w-auto justify-center sm:justify-start"
+                          >
+                            Lihat Detail
+                            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                          <form action={deleteReport.bind(null, r.id, "vehicle")} className="w-full sm:w-auto">
+                            <button
+                              type="submit"
+                              formAction={async () => {
+                                if (confirm(`Hapus laporan kendaraan "${r.jenisKendaraan}" tanggal ${new Date(r.tanggal).toLocaleDateString("id-ID")}?`)) {
+                                  try {
+                                    await deleteReport(r.id, "vehicle")
+                                    toast.success("✅ Laporan berhasil dihapus!")
+                                    window.location.reload()
+                                  } catch (error) {
+                                    toast.error("❌ Gagal menghapus laporan")
+                                  }
+                                }
+                              }}
+                              className="group flex items-center justify-center sm:justify-start gap-1 sm:gap-2 w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-700 hover:text-red-600 hover:border-red-500/50 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm rounded-lg font-semibold hover:shadow-md transition-all"
+                            >
+                              Hapus
+                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {pagination.totalPages && pagination.totalPages > 1 && (
               <Pagination

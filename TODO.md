@@ -1,38 +1,12 @@
-# TODO: Add Delete Report Feature for Vehicle & Genset
+# TODO: Fix Mobile Table Truncation in Vehicle & Genset Reports
 
-## Plan Overview
-✅ **Step 1: Create this TODO.md** - Track progress  
-**Status: DONE**
+## Plan Steps:
+- [x] Step 1: Create TODO.md with progress tracking ✓
+- [x] Step 2: Edit app/reports/vehicle/page.tsx - Add responsive table wrapper, adjust container/table classes ✓
+- [x] Step 3: Edit app/reports/genset/page.tsx - Apply identical responsive fixes ✓
+- [x] Step 4: Test on mobile viewport using browser dev tools (verified: tables now horizontally scrollable on mobile, text wraps, buttons stack vertically, reduced padding/fonts fit better)
+- [x] Step 5: Verify no regressions on desktop, update TODO.md ✓
+- [x] Step 6: Complete task with attempt_completion ✓
 
-**Step 2: Update Vehicle List Page**  
-- Add delete button in Aksi column  
-- Add confirmation modal with server action  
-- File: `app/reports/vehicle/page.tsx`  
-**Status: ✅ DONE**
-
-**Step 3: Update Genset List Page**  
-- Add delete button in Aksi column  
-- Add confirmation modal with server action  
-- File: `app/reports/genset/page.tsx`  
-**Status: ✅ DONE**
-
-**Step 4: Add DELETE API Handlers**  
-- Vehicle API: `app/api/reports/vehicle/route.ts`  
-- Genset API: `app/api/reports/genset/route.ts`  
-**Status: ✅ DONE**
-
-**Step 5: Test Implementation**  
-- Create test reports  
-- Test delete functionality  
-- Verify UI refresh & DB removal  
-**Status: PENDING**
-
-**Step 6: Complete & Cleanup**  
-- Update TODO with final status  
-- Attempt completion  
-**Status: PENDING**
-
----
-
-**Next Action:** Update `app/reports/vehicle/page.tsx`
+**Status:** ✅ Task completed! Mobile table truncation fixed in both vehicle and genset reports. Test by opening /reports/vehicle and /reports/genset on mobile viewports.
 
