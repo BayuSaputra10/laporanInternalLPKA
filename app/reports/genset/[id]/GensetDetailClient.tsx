@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Zap, Users, Calendar, Clock, FileText } from "lucide-react"
 import jsPDF from "jspdf"
@@ -10,13 +10,19 @@ import KopSurat from "@/app/components/KopSurat"
 
 export default function GensetDetailClient({ data }: any) {
   const printRef = useRef<HTMLDivElement>(null)
+  const [isExporting, setIsExporting] = useState(false)
   const router = useRouter()
 
   const exportPDF = async () => {
     if (!printRef.current) return
 
+    setIsExporting(true)
+    
+    // Wait for layout reflow and image load
+    await new Promise(resolve => setTimeout(resolve, 150))
+
     // pastikan image loaded
-    const images = printRef.current.getElementsByTagName("img")
+    const images = printRef.current!.getElementsByTagName("img")
 
     await Promise.all(
       Array.from(images).map((img) => {
@@ -28,21 +34,45 @@ export default function GensetDetailClient({ data }: any) {
       })
     )
 
-    const canvas = await html2canvas(printRef.current, {
+    // Force desktop width for full layout capture
+    const DESKTOP_WIDTH = 850;
+    printRef.current!.classList.add('pdf-export-desktop');
+    printRef.current!.style.minWidth = `${DESKTOP_WIDTH}px`;
+    printRef.current!.style.width = `${DESKTOP_WIDTH}px`;
+    
+    // Trigger reflow
+    printRef.current!.offsetHeight;
+    
+    // Wait extra for layout
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const canvas = await html2canvas(printRef.current!, {
       scale: 2,
-      useCORS: true
-    })
+      useCORS: true,
+      width: DESKTOP_WIDTH,
+      height: printRef.current!.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
+      logging: false
+    });
 
-    const imgData = canvas.toDataURL("image/png")
+    // Cleanup
+    printRef.current!.classList.remove('pdf-export-desktop');
+    printRef.current!.style.minWidth = '';
+    printRef.current!.style.width = '';
 
-    const pdf = new jsPDF("p", "mm", "a4")
+    const imgData = canvas.toDataURL("image/png", 1.0)
 
-    const pdfWidth = pdf.internal.pageSize.getWidth()
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width
-
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight)
-
+    const pdfWidthMM = 210
+    const pdfHeightMM = (canvas.height * pdfWidthMM) / canvas.width
+    
+    const pdf = new jsPDF('p', 'mm', [pdfWidthMM, pdfHeightMM]);
+    
+    pdf.addImage(imgData, 'PNG', 5, 5, pdfWidthMM - 10, pdfHeightMM - 10, undefined, 'NONE');
+    
     pdf.save(`lpka-genset-${data.id}.pdf`)
+    
+    setIsExporting(false)
   }
 
   return (
@@ -74,10 +104,12 @@ export default function GensetDetailClient({ data }: any) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
   ref={printRef}
-  className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm 
+  className={`max-w-4xl mx-auto bg-white/90 backdrop-blur-sm 
   rounded-2xl shadow-xl border border-lpka-green/20 
   p-4 sm:p-6 md:p-8 
-  text-black print:bg-white print:shadow-none print:border-none print:rounded-none"
+  text-black print:bg-white print:shadow-none print:border-none print:rounded-none ${
+    isExporting ? 'pdf-desktop' : ''
+  }`}
 >
 
           {/* KOP SURAT */}

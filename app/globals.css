@@ -69,6 +69,67 @@ body {
     font-size: 12pt;
   }
   .no-print { display: none !important; }
-  .shadow, .rounded, .bg-white { box-shadow: none !important; border-radius: 0 !important; background: white !important; }
+  .shadow, .rounded, .bg-white, .pdf-desktop { 
+    box-shadow: none !important; 
+    border-radius: 0.5rem !important; 
+    background: white !important; 
+  }
+}
+
+/* PDF Desktop Override - Force desktop layout (preserve grid composition, scale sizes) */
+.pdf-desktop, .pdf-export-desktop {
+  padding: 1.75rem !important; /* md:p-8 scale */
+  font-size: 0.95rem !important;
+}
+
+/* Preserve grid compositions */
+.pdf-desktop [class*="md:grid-cols-2"] {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.pdf-desktop [class*="sm:grid-cols-3"] {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.pdf-desktop [class*="text-xs"],
+.pdf-desktop [class*="text-sm"] {
+  font-size: 0.875rem !important;
+}
+
+.pdf-desktop [class*="text-lg"],
+.pdf-desktop [class*="text-xl"],
+.pdf-desktop [class*="text-2xl"],
+.pdf-desktop [class*="text-3xl"] {
+  font-size: 1.125rem !important;
+}
+
+.pdf-desktop [class*="p-3"],
+.pdf-desktop [class*="p-4"] {
+  padding: 1.5rem !important;
+}
+
+.pdf-desktop [class*="w-7"],
+.pdf-desktop [class*="w-10"],
+.pdf-desktop [class*="w-12"] {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  min-width: 2.5rem !important;
+}
+
+.pdf-desktop img {
+  max-height: 400px !important;
+  width: auto !important;
+}
+
+@media print {
+  .pdf-desktop {
+    padding: 1.5rem !important;
+    backdrop-filter: none !important;
+  }
+  
+  .pdf-desktop * {
+    max-width: none !important;
+    animation: none !important;
+  }
 }
 
