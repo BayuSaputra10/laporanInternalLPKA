@@ -8,7 +8,13 @@ import DashboardHeader from "@/app/components/DashboardHeader"
 import Footer from "@/app/components/Footer"
 
 async function getDashboardData() {
-  const today = new Date()
+  const now = new Date()
+
+  const jakartaNow = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" })
+  )
+
+  const today = new Date(jakartaNow)
   today.setHours(0, 0, 0, 0)
 
   const tomorrow = new Date(today)
@@ -86,7 +92,7 @@ export default async function Page() {
   return (
     <>
       <DashboardHeader />
-      
+
       {/* ENHANCED STATS GRID */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-20">
         <div className="group bg-gradient-to-br from-lpka-green/10 via-white/50 to-lpka-green/5 border-4 border-lpka-green/20 rounded-2xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 backdrop-blur-sm text-center">
@@ -182,7 +188,7 @@ export default async function Page() {
                 </Link>
               ))}
             </div>
-            
+
             {/* Desktop Table */}
             <div className="hidden lg:block">
               <div className="overflow-x-auto">
@@ -278,7 +284,7 @@ export default async function Page() {
                 </Link>
               ))}
             </div>
-            
+
             {/* Desktop Table */}
             <div className="hidden lg:block">
               <div className="overflow-x-auto">
