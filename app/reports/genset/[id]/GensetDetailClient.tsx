@@ -49,11 +49,11 @@ export default function GensetDetailClient({ data }: any) {
     <>
       <header className="border-b border-lpka-green/20 pb-6 mb-8">
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-3 sm:gap-0 justify-between items-center">
             <button
               onClick={() => router.back()}
-              className="group flex items-center gap-2 bg-lpka-green hover:bg-lpka-green/90 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-lpka-green hover:bg-lpka-green/90 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
             >
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
               Kembali
@@ -61,7 +61,7 @@ export default function GensetDetailClient({ data }: any) {
 
             <button
               onClick={exportPDF}
-              className="group flex items-center gap-2 bg-lpka-primary hover:bg-lpka-primary/90 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-lpka-primary hover:bg-lpka-primary/90 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
             >
               Export PDF
               <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -72,34 +72,40 @@ export default function GensetDetailClient({ data }: any) {
 
       {/* CONTENT */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={printRef} className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-lpka-green/20 p-8 text-black print:bg-white print:shadow-none print:border-none print:rounded-none">
+        <div
+  ref={printRef}
+  className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm 
+  rounded-2xl shadow-xl border border-lpka-green/20 
+  p-4 sm:p-6 md:p-8 
+  text-black print:bg-white print:shadow-none print:border-none print:rounded-none"
+>
 
           {/* KOP SURAT */}
           <KopSurat title="Laporan Pemeriksaan Genset Harian" />
 
           {/* TITLE */}
-          <div className="flex items-center gap-3 mb-8 pt-2 border-t border-lpka-green/30">
-            <Zap className="w-10 h-10 text-lpka-green" />
-            <div>
-              <h1 className="font-heading text-2xl md:text-3xl font-bold text-lpka-green">
-                Detail Laporan #{data.id}
-              </h1>
-              <p className="text-sm text-gray-600 mt-1">Data pemeriksaan lengkap</p>
-            </div>
-          </div>
+          <div className="flex items-start sm:items-center gap-3 mb-6 sm:mb-8 pt-2 border-t border-lpka-green/30">
+  <Zap className="w-7 h-7 sm:w-10 sm:h-10 text-lpka-green shrink-0" />
+  <div>
+    <h1 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-lpka-green">
+      Detail Laporan #{data.id}
+    </h1>
+    <p className="text-xs sm:text-sm text-gray-600 mt-1">Data pemeriksaan lengkap</p>
+  </div>
+</div>
 
           {/* DATA GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-sm">
             <div className="space-y-3">
-              <div className="flex items-start gap-3 p-4 bg-lpka-green/5 rounded-xl border border-lpka-green/20">
-                <div className="w-12 h-12 bg-lpka-green/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Users className="w-6 h-6 text-lpka-green" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-1">Regu</h3>
-                  <p className="font-bold text-lg text-lpka-green">{data.regu}</p>
-                </div>
-              </div>
+              <div className="flex items-start gap-3 p-3 sm:p-4 bg-lpka-green/5 rounded-xl border border-lpka-green/20">
+  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-lpka-green/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-lpka-green" />
+  </div>
+  <div>
+    <h3 className="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Regu</h3>
+    <p className="font-bold text-base sm:text-lg text-lpka-green">{data.regu}</p>
+  </div>
+</div>
 
               <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
@@ -123,12 +129,14 @@ export default function GensetDetailClient({ data }: any) {
                 </div>
               </div>
 
-              <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-gray-800">Hour Meter</span>
-                  <span className="text-2xl font-bold text-gray-900">{data.hourMeterAwal} → {data.hourMeterAkhir}</span>
-                </div>
-              </div>
+              <div className="p-3 sm:p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <span className="font-semibold text-gray-800 text-sm sm:text-base">Hour Meter</span>
+    <span className="text-lg sm:text-2xl font-bold text-gray-900 break-words">
+      {data.hourMeterAwal} → {data.hourMeterAkhir}
+    </span>
+  </div>
+</div>
             </div>
           </div>
 
@@ -138,7 +146,7 @@ export default function GensetDetailClient({ data }: any) {
               <Zap className="w-6 h-6" />
               Status Solar
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <div className="text-center p-4 bg-white rounded-xl shadow-sm">
                 <div className="text-2xl font-bold text-green-600 mb-1">{data.solarLevelAwal}%</div>
                 <div className="text-xs uppercase tracking-wide text-gray-500">Awal</div>
@@ -162,10 +170,9 @@ export default function GensetDetailClient({ data }: any) {
             <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-300">
               {data.photoBase64 ? (
                 <img
-                  src={`data:image/jpeg;base64,${data.photoBase64}`}
-                  className="w-full max-h-[500px] object-contain rounded-xl shadow-lg mx-auto"
-                  alt="Foto laporan"
-                />
+  src={`data:image/jpeg;base64,${data.photoBase64}`}
+  className="w-full max-h-[300px] sm:max-h-[500px] object-contain rounded-xl shadow-lg mx-auto"
+/>
               ) : (
                 <div className="text-center py-12 text-gray-500">
                   <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />

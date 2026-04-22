@@ -19,6 +19,7 @@ type Errors = Partial<Record<keyof FormData, string>>
 
 export default function CreateGensetReport() {
   const router = useRouter()
+
   const [form, setForm] = useState<FormData>({
     regu: '',
     tanggal: '',
@@ -33,9 +34,12 @@ export default function CreateGensetReport() {
   const [errors, setErrors] = useState<Errors>({})
   const [submitting, setSubmitting] = useState(false)
 
-  const inputClass = 'w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lpka-green/50 focus:border-lpka-green shadow-sm hover:shadow-md transition-all md:px-6 md:py-4'
+  // 🔧 DIPERKECIL UNTUK MOBILE
+  const inputClass =
+    'w-full px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lpka-green/50 focus:border-lpka-green shadow-sm transition md:px-4 md:py-3'
 
-  const labelClass = 'block text-sm font-semibold text-gray-800 mb-2 md:text-base md:mb-3'
+  const labelClass =
+    'block text-xs sm:text-sm font-semibold text-gray-800 mb-1.5 sm:mb-2'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target
@@ -43,7 +47,7 @@ export default function CreateGensetReport() {
     if (name === 'photo') {
       const file = files?.[0] || null
       if (file && !file.type.startsWith('image/')) {
-        toast.error('❌ Hanya file foto yang diizinkan (jpg, png, gif, etc.)')
+        toast.error('❌ Hanya file foto yang diizinkan')
         return
       }
       setForm(prev => ({ ...prev, photo: file }))
@@ -112,9 +116,7 @@ export default function CreateGensetReport() {
     )
       newErrors.solarLevelAkhir = 'Solar akhir ≤ awal'
 
-    if (!form.photo) {
-      newErrors.photo = 'Foto wajib diupload'
-    }
+    if (!form.photo) newErrors.photo = 'Foto wajib diupload'
 
     return newErrors
   }
@@ -125,7 +127,7 @@ export default function CreateGensetReport() {
     const validationErrors = validate()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
-      toast.error('⚠️ Mohon lengkapi data yang kurang')
+      toast.error('⚠️ Mohon lengkapi data')
       return
     }
 
@@ -155,13 +157,13 @@ export default function CreateGensetReport() {
       const data = await res.json()
 
       if (res.ok && data.success) {
-        toast.success('✅ Laporan genset berhasil dibuat!')
+        toast.success('✅ Berhasil!')
         router.push('/')
       } else {
-        toast.error(data.message || '❌ Gagal membuat laporan genset')
+        toast.error(data.message || '❌ Gagal')
       }
-    } catch (error) {
-      toast.error('❌ Kesalahan jaringan')
+    } catch {
+      toast.error('❌ Error jaringan')
     } finally {
       setSubmitting(false)
     }
@@ -173,90 +175,90 @@ export default function CreateGensetReport() {
       : null
 
   return (
-    <div className=''>
-      <div className='fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(34,197,94,0.3),transparent),radial-gradient(circle_at_80%_20%,rgba(120,200,255,0.2),transparent),radial-gradient(circle_at_50%_50%,rgba(34,197,94,0.2),transparent)] pointer-events-none animate-pulse' />
-      <div className='relative z-10 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8'>
-        <div className='w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden mx-auto'>
+    <div>
+      {/* BACKGROUND */}
+      <div className='fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(34,197,94,0.2),transparent),radial-gradient(circle_at_80%_20%,rgba(120,200,255,0.15),transparent)] pointer-events-none' />
+
+      {/* CONTAINER */}
+      <div className='relative z-10 flex items-start justify-center min-h-screen px-3 py-4 sm:p-6'>
+
+        <div className='w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl border border-white/50 overflow-hidden'>
 
           {/* HEADER */}
-          <div className='bg-gradient-to-r from-lpka-green/95 to-green-700 p-6 sm:p-8 text-white'>
-            <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight'>📋 Laporan Genset</h1>
-            <p className='text-green-100 text-sm sm:text-base md:text-lg mt-2 opacity-90'>Input data operasional harian</p>
+          <div className='bg-gradient-to-r from-lpka-green/95 to-green-700 p-4 sm:p-6 md:p-8 text-white'>
+            <h1 className='text-xl sm:text-2xl md:text-3xl font-bold'>Laporan Genset</h1>
+            <p className='text-green-100 text-sm mt-1'>Input data operasional</p>
           </div>
 
           {/* FORM */}
-          <form onSubmit={handleSubmit} className='p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8'>
+          <form onSubmit={handleSubmit} className='p-4 sm:p-6 md:p-8 space-y-5 md:space-y-6'>
 
             {/* BASIC */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
                 <label className={labelClass}>Regu *</label>
                 <input name='regu' value={form.regu} onChange={handleChange} className={inputClass} />
-                {errors.regu && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.regu}</p>}
+                {errors.regu && <p className='text-red-500 text-xs mt-1'>{errors.regu}</p>}
               </div>
 
               <div>
                 <label className={labelClass}>Tanggal *</label>
                 <input type='date' name='tanggal' value={form.tanggal} onChange={handleChange} className={inputClass} />
-                {errors.tanggal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.tanggal}</p>}
+                {errors.tanggal && <p className='text-red-500 text-xs mt-1'>{errors.tanggal}</p>}
               </div>
             </div>
 
             <div>
               <label className={labelClass}>Waktu Pemakaian (Jam) *</label>
               <input type='number' name='waktuPemakaianJam' value={form.waktuPemakaianJam ?? ''} onChange={handleChange} className={inputClass} />
-              {errors.waktuPemakaianJam && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.waktuPemakaianJam}</p>}
+              {errors.waktuPemakaianJam && <p className='text-red-500 text-xs mt-1'>{errors.waktuPemakaianJam}</p>}
             </div>
 
-            {/* HOUR METER */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+            {/* HM */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
                 <label className={labelClass}>HM Awal *</label>
                 <input type='number' name='hourMeterAwal' value={form.hourMeterAwal ?? ''} onChange={handleChange} className={inputClass} />
-                {errors.hourMeterAwal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.hourMeterAwal}</p>}
               </div>
-
               <div>
                 <label className={labelClass}>HM Akhir *</label>
                 <input type='number' name='hourMeterAkhir' value={form.hourMeterAkhir ?? ''} onChange={handleChange} className={inputClass} />
-                {errors.hourMeterAkhir && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.hourMeterAkhir}</p>}
               </div>
             </div>
 
             {/* SOLAR */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
                 <label className={labelClass}>Solar Awal (%) *</label>
                 <input type='number' name='solarLevelAwal' value={form.solarLevelAwal ?? ''} onChange={handleChange} className={inputClass} />
-                {errors.solarLevelAwal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.solarLevelAwal}</p>}
               </div>
-
               <div>
                 <label className={labelClass}>Solar Akhir (%) *</label>
                 <input type='number' name='solarLevelAkhir' value={form.solarLevelAkhir ?? ''} onChange={handleChange} className={inputClass} />
-                {errors.solarLevelAkhir && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.solarLevelAkhir}</p>}
               </div>
             </div>
 
+            {/* PREVIEW */}
             {solarPreview != null && (
-              <div className='p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 text-green-800 text-sm sm:text-base md:text-lg font-semibold shadow-lg border border-green-200'>
-                Pemakaian Solar: <span className='text-xl sm:text-2xl md:text-3xl font-black'>{solarPreview}%</span>
+              <div className='p-3 rounded-xl bg-green-50 text-green-800 text-sm font-semibold border border-green-200'>
+                Pemakaian: <span className='font-bold'>{solarPreview}%</span>
               </div>
             )}
 
             {/* FILE */}
             <div>
               <label className={labelClass}>Upload Foto *</label>
-              <input type='file' name='photo' accept='image/*' onChange={handleChange} className="w-full mt-2 p-3 border-2 border-dashed border-lpka-green/30 rounded-xl bg-lpka-green/5 text-sm sm:text-base file:mr-4 file:py-2 sm:file:py-3 file:px-4 sm:file:px-6 file:rounded-xl file:border-0 file:font-semibold file:bg-lpka-green file:text-white hover:file:bg-lpka-green/90 hover:border-lpka-green/50 transition-all cursor-pointer" />
-              {errors.photo && <p className='text-red-500 text-xs sm:text-sm mt-2 font-medium'>{errors.photo}</p>}
+              <input type='file' name='photo' accept='image/*' onChange={handleChange}
+                className="w-full p-2 border border-dashed border-lpka-green/40 rounded-xl text-sm file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:bg-lpka-green file:text-white"
+              />
             </div>
 
             {/* BUTTON */}
             <button
               disabled={submitting}
-              className='w-full bg-gradient-to-r from-lpka-green to-green-600 hover:from-lpka-green/90 hover:to-green-600/90 text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-lpka-green/50'
+              className='w-full bg-lpka-green text-white py-3 rounded-xl font-semibold text-sm hover:opacity-90 transition'
             >
-              {submitting ? 'Menyimpan Laporan...' : '🔋 Simpan Laporan Genset'}
+              {submitting ? 'Menyimpan...' : 'Simpan Laporan'}
             </button>
 
           </form>
@@ -265,4 +267,3 @@ export default function CreateGensetReport() {
     </div>
   )
 }
-

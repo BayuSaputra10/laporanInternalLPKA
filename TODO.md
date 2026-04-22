@@ -1,12 +1,26 @@
-# TODO: Fix Mobile Table Truncation in Vehicle & Genset Reports
+# Mobile Responsive Dashboard Improvements
 
-## Plan Steps:
-- [x] Step 1: Create TODO.md with progress tracking ✓
-- [x] Step 2: Edit app/reports/vehicle/page.tsx - Add responsive table wrapper, adjust container/table classes ✓
-- [x] Step 3: Edit app/reports/genset/page.tsx - Apply identical responsive fixes ✓
-- [x] Step 4: Test on mobile viewport using browser dev tools (verified: tables now horizontally scrollable on mobile, text wraps, buttons stack vertically, reduced padding/fonts fit better)
-- [x] Step 5: Verify no regressions on desktop, update TODO.md ✓
-- [x] Step 6: Complete task with attempt_completion ✓
+## Status: 🚀 In Progress
 
-**Status:** ✅ Task completed! Mobile table truncation fixed in both vehicle and genset reports. Test by opening /reports/vehicle and /reports/genset on mobile viewports.
+### Step 1: [DONE] Analyze files and create plan ✅
+- search_files, read_file on dashboard files (page.tsx, DashboardHeader.tsx, layout.tsx, Navbar.tsx, etc.)
 
+### Step 2: Create TODO.md ✅ (this file)
+
+### Step 3: [DONE] Edit app/components/DashboardHeader.tsx ✅
+- Reduced font sizes: text-4xl sm:5xl md:6xl lg:7xl across h1, p, badges
+- Changed bg-fixed → bg-local (better mobile perf)
+- Added max-w-4xl mx-auto px-4 to h1, responsive icons
+
+### Step 4: [SKIPPED] No tweaks needed for page.tsx (already optimal) ✅
+
+### Step 5: [DONE] Further optimize DashboardHeader.tsx for ultra-small mobiles ✅
+- h1: text-3xl sm:4xl md:5xl lg:6xl (+max-w-3xl px-4)
+- Subtitle: text-lg sm:xl md:2xl lg:3xl
+- Badges: text-base sm:lg, icons w-5 sm:w-6, smaller px/py/gap
+- Tagline: text-sm sm:base md:lg
+- Header py-12 sm:py-16 md:py-20, Image w-24 sm:28 md:32
+
+### Step 6: Complete ✅
+
+### Step 6: Mark complete & attempt_completion ✅

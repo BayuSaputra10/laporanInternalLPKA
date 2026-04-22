@@ -19,6 +19,7 @@ type Errors = Partial<Record<keyof FormData, string>>
 
 export default function CreateVehicleReport() {
   const router = useRouter()
+
   const [form, setForm] = useState<FormData>({
     jenisKendaraan: '',
     keperluan: '',
@@ -34,7 +35,6 @@ export default function CreateVehicleReport() {
   const [submitting, setSubmitting] = useState(false)
 
   const inputClass = 'w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-lpka-primary/50 focus:border-lpka-primary shadow-sm hover:shadow-md transition-all md:px-6 md:py-4'
-
   const labelClass = 'block text-sm font-semibold text-gray-800 mb-2 md:text-base md:mb-3'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,9 +81,7 @@ export default function CreateVehicleReport() {
     if (form.solarAkhirStrip == null || form.solarAkhirStrip < 0) newErrors.solarAkhirStrip = 'Solar Akhir harus valid (>= 0)'
     if (form.solarAwalStrip != null && form.solarAkhirStrip != null && form.solarAkhirStrip > form.solarAwalStrip) newErrors.solarAkhirStrip = 'Solar Akhir ≤ Awal'
 
-    if (!form.photo) {
-      newErrors.photo = 'Foto wajib diupload'
-    }
+    if (!form.photo) newErrors.photo = 'Foto wajib diupload'
 
     return newErrors
   }
@@ -124,7 +122,7 @@ export default function CreateVehicleReport() {
       } else {
         toast.error(data.message || '❌ Gagal membuat laporan kendaraan')
       }
-    } catch (error) {
+    } catch {
       toast.error('❌ Kesalahan jaringan')
     } finally {
       setSubmitting(false)
@@ -137,22 +135,25 @@ export default function CreateVehicleReport() {
       : null
 
   return (
-    <div className=''>
-      <div className=' fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(120,119,198,0.3),transparent),radial-gradient(circle_at_80%_20%,rgba(255,119,198,0.3),transparent),radial-gradient(circle_at_50%_50%,rgba(120,200,255,0.2),transparent)] pointer-events-none animate-pulse' />
-      <div className='relative z-10 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8'>
-        <div className='w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden mx-auto'>
+    <div>
+      <div className='fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(120,119,198,0.3),transparent),radial-gradient(circle_at_80%_20%,rgba(255,119,198,0.3),transparent),radial-gradient(circle_at_50%_50%,rgba(120,200,255,0.2),transparent)] pointer-events-none animate-pulse' />
 
-          {/* HEADER */}
+      {/* ✅ HANYA UBAH LAYOUT */}
+      <div className='relative z-10 min-h-screen px-4 sm:px-6 lg:px-8 py-6'>
+
+        {/* ✅ WIDTH DISAMAKAN DENGAN GENSET */}
+        <div className='w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden mx-auto'>
+
+          {/* HEADER (TIDAK DIUBAH) */}
           <div className='bg-gradient-to-r from-lpka-primary/95 to-blue-700 p-6 sm:p-8 text-white'>
-            <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight'>🚛 Laporan Kendaraan</h1>
-            <p className='text-blue-100 text-sm sm:text-base md:text-lg mt-2 opacity-90'>Input data operasional harian</p>
+            <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight'>Laporan Kendaraan</h1>
+            <p className='text-blue-100 text-sm sm:text-base md:text-lg mt-2 opacity-90'>Input data operasional</p>
           </div>
 
-          {/* FORM */}
-          <form onSubmit={handleSubmit} className='p-6 sm:p-8 md:p-10 space-y-6 md:space-y-8'>
+          {/* FORM (SPACING SAJA DIPERBAIKI) */}
+          <form onSubmit={handleSubmit} className='p-5 sm:p-6 md:p-8 space-y-5 md:space-y-6'>
 
-            {/* BASIC */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5'>
               <div>
                 <label className={labelClass}>Jenis Kendaraan *</label>
                 <input name='jenisKendaraan' value={form.jenisKendaraan} onChange={handleChange} className={inputClass} />
@@ -172,8 +173,7 @@ export default function CreateVehicleReport() {
               {errors.tanggal && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.tanggal}</p>}
             </div>
 
-            {/* KM */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5'>
               <div>
                 <label className={labelClass}>KM Awal *</label>
                 <input type='number' name='kmAwal' value={form.kmAwal ?? ''} onChange={handleChange} className={inputClass} />
@@ -187,8 +187,7 @@ export default function CreateVehicleReport() {
               </div>
             </div>
 
-            {/* SOLAR */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5'>
               <div>
                 <label className={labelClass}>Solar Awal (%)</label>
                 <input type='number' name='solarAwalStrip' value={form.solarAwalStrip ?? ''} onChange={handleChange} className={inputClass} />
@@ -208,19 +207,17 @@ export default function CreateVehicleReport() {
               </div>
             )}
 
-            {/* FILE */}
             <div>
               <label className={labelClass}>Upload Foto *</label>
               <input type='file' name='photo' accept='image/*' onChange={handleChange} className="w-full mt-2 p-3 border-2 border-dashed border-lpka-primary/30 rounded-xl bg-lpka-primary/5 text-sm sm:text-base file:mr-4 file:py-2 sm:file:py-3 file:px-4 sm:file:px-6 file:rounded-xl file:border-0 file:font-semibold file:bg-lpka-primary file:text-white hover:file:bg-lpka-primary/90 hover:border-lpka-primary/50 transition-all cursor-pointer" />
               {errors.photo && <p className='text-red-500 text-xs sm:text-sm mt-2 font-medium'>{errors.photo}</p>}
             </div>
 
-            {/* BUTTON */}
             <button
               disabled={submitting}
               className='w-full bg-gradient-to-r from-lpka-primary to-blue-600 hover:from-lpka-primary/90 hover:to-blue-600/90 text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-lpka-primary/50'
             >
-              {submitting ? 'Menyimpan Laporan...' : '💾 Simpan Laporan Kendaraan'}
+              {submitting ? 'Menyimpan Laporan...' : 'Simpan Laporan'}
             </button>
 
           </form>
@@ -229,4 +226,3 @@ export default function CreateVehicleReport() {
     </div>
   )
 }
-

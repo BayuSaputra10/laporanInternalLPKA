@@ -15,7 +15,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 group">
             <img src="/lpka2.png" alt="LPKA Logo" className="w-10 h-10 rounded-full group-hover:scale-110 transition-transform duration-300" />
             <span className="font-heading text-xl md:text-2xl font-bold bg-gradient-to-r from-lpka-primary to-lpka-green bg-clip-text text-transparent">
-              LPKA Sistem
+              LPKA Sistem Laporan
             </span>
           </Link>
 
