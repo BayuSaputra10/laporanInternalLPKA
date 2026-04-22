@@ -26,10 +26,19 @@ export interface VehicleReport {
   createdAt: string;
 }
 
+export interface FooterData {
+  todayTotal: number;
+  todayGenset: number;
+  todayVehicle: number;
+  pending: number;
+  activeTeams: number;
+}
+
 export interface DashboardData {
   gensetReports: GensetReport[];
   vehicleReports: VehicleReport[];
   totalGenset: number;
   totalVehicle: number;
+  footerData: FooterData;
 }
 

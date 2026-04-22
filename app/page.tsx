@@ -5,8 +5,15 @@ import { Truck, Zap, FileText, Plus, ArrowRight, Calendar, Users, Table, BarChar
 import { prisma } from "@/lib/prisma"
 import type { GensetReport, VehicleReport } from "@/lib/types"
 import DashboardHeader from "@/app/components/DashboardHeader"
+import Footer from "@/app/components/Footer"
 
 async function getDashboardData() {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
   const gensetReports = await prisma.gensetReport.findMany({
     take: 5,
     orderBy: { id: "desc" }
@@ -20,11 +27,54 @@ async function getDashboardData() {
   const totalGenset = await prisma.gensetReport.count()
   const totalVehicle = await prisma.vehicleReport.count()
 
+  // Real data for footer
+  const todayGenset = await prisma.gensetReport.count({
+    where: {
+      tanggal: {
+        gte: today,
+        lt: tomorrow
+      }
+    }
+  })
+
+  const todayVehicle = await prisma.vehicleReport.count({
+    where: {
+      tanggal: {
+        gte: today,
+        lt: tomorrow
+      }
+    }
+  })
+
+  const todayTotal = todayGenset + todayVehicle
+
+  const pendingVehicle = await prisma.vehicleReport.count({
+    where: {
+      status: "draft"
+    }
+  })
+
+  const distinctRegu = await prisma.gensetReport.groupBy({
+    by: ['regu'],
+    _count: {
+      regu: true
+    }
+  })
+
+  const activeTeams = distinctRegu.length
+
   return {
     gensetReports: gensetReports as unknown as GensetReport[],
     vehicleReports: vehicleReports as unknown as VehicleReport[],
     totalGenset,
-    totalVehicle
+    totalVehicle,
+    footerData: {
+      todayTotal,
+      todayGenset,
+      todayVehicle,
+      pending: pendingVehicle,
+      activeTeams
+    }
   }
 }
 
@@ -275,6 +325,8 @@ export default async function Page() {
           </div>
         )}
       </section>
+
+      <Footer footerData={data.footerData} />
     </>
   )
 }
