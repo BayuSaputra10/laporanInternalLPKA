@@ -50,6 +50,13 @@ export interface VehicleServiceReport {
   createdAt: string;
 }
 
+export interface GensetServiceReport {
+  id: number;
+  tanggal: string;
+  catatan: string;
+  createdAt: string;
+}
+
 export interface FooterData {
   todayTotal: number;
   todayGenset: number;
@@ -57,6 +64,7 @@ export interface FooterData {
   todayVehicleFuel: number;
   todayGensetFuel: number;
   todayVehicleService: number;
+  todayGensetService: number;
   pending: number;
   activeTeams: number;
 }
@@ -67,11 +75,13 @@ export interface DashboardData {
   vehicleFuelReports: VehicleFuelReport[];
   gensetFuelReports: GensetFuelReport[];
   vehicleServiceReports: VehicleServiceReport[];
+  gensetServiceReports: GensetServiceReport[];
   totalGenset: number;
   totalVehicle: number;
   totalVehicleFuel: number;
   totalGensetFuel: number;
   totalVehicleService: number;
+  totalGensetService: number;
   footerData: FooterData;
 }
 

@@ -7,7 +7,7 @@ interface PaginationProps {
   totalCount: number
   pageSize: number
   basePath: string
-  color?: 'green' | 'primary' | 'purple'
+  color?: 'green' | 'primary' | 'purple' | 'teal'
 }
 
 export default function Pagination({
@@ -33,6 +33,14 @@ export default function Pagination({
         text: 'text-purple-600',
         bgHover: 'hover:bg-purple-50',
         border: 'border-purple-200'
+      }
+    }
+    if (color === 'teal') {
+      return {
+        bg: 'bg-teal-600 hover:bg-teal-500',
+        text: 'text-teal-600',
+        bgHover: 'hover:bg-teal-50',
+        border: 'border-teal-200'
       }
     }
     return {
@@ -123,4 +131,3 @@ export default function Pagination({
     </div>
   )
 }
-

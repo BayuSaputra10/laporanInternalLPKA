@@ -8,7 +8,7 @@ interface SortableHeaderProps {
   currentSortDir: 'asc' | 'desc' | null
   basePath: string
   otherParams?: string
-  color?: 'green' | 'primary' | 'purple'
+  color?: 'green' | 'primary' | 'purple' | 'teal'
   className?: string
 }
 
@@ -28,6 +28,9 @@ export default function SortableHeader({
     }
     if (color === 'purple') {
       return 'text-purple-600 hover:text-purple-500'
+    }
+    if (color === 'teal') {
+      return 'text-teal-600 hover:text-teal-500'
     }
     return 'text-lpka-green hover:text-lpka-green/80'
   }
@@ -56,4 +59,3 @@ export default function SortableHeader({
     </th>
   )
 }
-
