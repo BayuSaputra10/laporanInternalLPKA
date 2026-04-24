@@ -1,57 +1,57 @@
 import Link from "next/link"
-import { Plus, ArrowRight } from "lucide-react"
+import { Truck, Zap, ArrowRight } from "lucide-react"
 
 export default function ActionButtons() {
   return (
-    <section className="flex flex-wrap gap-4 lg:gap-6 mb-20 justify-center">
-      <Link
-        href="/reports/genset/create"
-        className="group flex items-center justify-center gap-4 bg-gradient-to-r from-lpka-green to-[#10b981] hover:from-lpka-green/90 hover:to-[#10b981]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-lpka-green/50"
-      >
-        <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
-        Buat Laporan Genset
-        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
-      </Link>
-      <Link
-        href="/reports/vehicle/create"
-        className="group flex items-center justify-center gap-4 bg-gradient-to-r from-lpka-primary to-[#3b82f6] hover:from-lpka-primary/90 hover:to-[#3b82f6]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-lpka-primary/50"
-      >
-        <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
-        Buat Laporan Kendaraan
-        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
-      </Link>
-      <Link
-        href="/reports/vehicle-fuel/create"
-        className="group flex items-center justify-center gap-4 bg-gradient-to-r from-yellow-500 to-[#d97706] hover:from-yellow-500/90 hover:to-[#d97706]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-yellow-500/50"
-      >
-        <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
-        Solar Kendaraan
-        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
-      </Link>
-      <Link
-        href="/reports/genset-fuel/create"
-        className="group flex items-center justify-center gap-4 bg-gradient-to-r from-orange-500 to-[#c2410c] hover:from-orange-500/90 hover:to-[#c2410c]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-orange-500/50"
-      >
-        <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
-        Solar Genset
-        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
-      </Link>
-      <Link
-        href="/reports/vehicle-service/create"
-        className="group flex items-center justify-center gap-4 bg-gradient-to-r from-purple-600 to-[#7c3aed] hover:from-purple-600/90 hover:to-[#7c3aed]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-purple-500/50"
-      >
-        <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
-        Servis Kendaraan
-        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
-      </Link>
-      <Link
-        href="/reports/genset-service/create"
-        className="group flex items-center justify-center gap-4 bg-gradient-to-r from-pink-600 to-[#db2777] hover:from-pink-600/90 hover:to-[#db2777]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-pink-500/50"
-      >
-        <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
-        Servis Genset
-        <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
-      </Link>
+    <section className="max-w-4xl mx-auto px-4 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Tombol Laporan Kendaraan */}
+        <Link
+          href="/reports/vehicle-menu"
+          className="group relative bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-lpka-primary/20 hover:border-lpka-primary/50 overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-lpka-primary/10 to-transparent rounded-bl-full" />
+          <div className="relative">
+            <div className="w-16 h-16 bg-gradient-to-br from-lpka-primary to-blue-500 rounded-2xl flex items-center justify-center shadow-lg mb-5 group-hover:scale-110 transition-transform duration-300">
+              <Truck className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Laporan Kendaraan
+            </h2>
+            <p className="text-gray-500 mb-4 leading-relaxed">
+              Kelola laporan harian, pengisian solar, dan servis kendaraan dinas
+            </p>
+            <div className="flex items-center gap-2 text-lpka-primary font-bold group-hover:gap-3 transition-all">
+              Buat Laporan
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </Link>
+
+        {/* Tombol Laporan Genset */}
+        <Link
+          href="/reports/genset-menu"
+          className="group relative bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-lpka-green/20 hover:border-lpka-green/50 overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-lpka-green/10 to-transparent rounded-bl-full" />
+          <div className="relative">
+            <div className="w-16 h-16 bg-gradient-to-br from-lpka-green to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg mb-5 group-hover:scale-110 transition-transform duration-300">
+              <Zap className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Laporan Genset
+            </h2>
+            <p className="text-gray-500 mb-4 leading-relaxed">
+              Kelola laporan harian, pengisian solar, dan servis genset
+            </p>
+            <div className="flex items-center gap-2 text-lpka-green font-bold group-hover:gap-3 transition-all">
+              Buat Laporan
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </Link>
+      </div>
     </section>
   )
 }
+

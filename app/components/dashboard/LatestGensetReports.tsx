@@ -31,7 +31,14 @@ export default function LatestGensetReports({ reports }: LatestGensetReportsProp
         <div className="text-center py-20 md:py-24 text-gray-500 bg-gradient-to-b from-gray-50/50 to-transparent rounded-3xl p-12 backdrop-blur-sm border border-dashed border-gray-200">
           <FileText className="w-20 h-20 mx-auto mb-6 opacity-50" />
           <h3 className="text-2xl font-semibold text-gray-700 mb-2">Belum ada laporan genset</h3>
-          <p className="text-lg">Mulai dengan membuat laporan pertama</p>
+          <p className="text-lg mb-6">Mulai dengan membuat laporan pertama</p>
+          <Link
+            href="/reports/genset-menu"
+            className="inline-flex items-center gap-2 bg-lpka-green hover:bg-lpka-green/90 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
+          >
+            Buat Laporan Genset
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       ) : (
         <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-lpka-green/20 overflow-hidden">

@@ -2,7 +2,6 @@
 import Link from "next/link"
 import { Menu, X, Zap, Truck, Home, FileText } from "lucide-react"
 import { useState } from "react"
-import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -25,13 +24,13 @@ export default function Navbar() {
               <Home className="w-5 h-5" />
               Dashboard
             </Link>
-            <Link href="/reports/genset" className="px-4 py-2 rounded-xl font-semibold text-lpka-green hover:bg-lpka-green/10 hover:shadow-md transition-all duration-300 flex items-center gap-2">
-              <Zap className="w-5 h-5" />
-              Genset
-            </Link>
-            <Link href="/reports/vehicle" className="px-4 py-2 rounded-xl font-semibold text-lpka-primary hover:bg-lpka-primary/10 hover:shadow-md transition-all duration-300 flex items-center gap-2">
+            <Link href="/reports/vehicle-menu" className="px-4 py-2 rounded-xl font-semibold text-lpka-primary hover:bg-lpka-primary/10 hover:shadow-md transition-all duration-300 flex items-center gap-2">
               <Truck className="w-5 h-5" />
               Kendaraan
+            </Link>
+            <Link href="/reports/genset-menu" className="px-4 py-2 rounded-xl font-semibold text-lpka-green hover:bg-lpka-green/10 hover:shadow-md transition-all duration-300 flex items-center gap-2">
+              <Zap className="w-5 h-5" />
+              Genset
             </Link>
             <Link href="/about" className="px-4 py-2 rounded-xl font-semibold text-gray-700 hover:bg-gray-100 hover:shadow-md transition-all duration-300 flex items-center gap-2">
               <FileText className="w-5 h-5" />
@@ -54,11 +53,11 @@ export default function Navbar() {
             <Link href="/" className="block px-4 py-3 rounded-xl font-semibold text-lpka-primary hover:bg-lpka-primary/10 transition-all flex items-center gap-3" onClick={() => setIsOpen(false)}>
               <Home className="w-6 h-6 flex-shrink-0" /> Dashboard
             </Link>
-            <Link href="/reports/genset" className="block px-4 py-3 rounded-xl font-semibold text-lpka-green hover:bg-lpka-green/10 transition-all flex items-center gap-3" onClick={() => setIsOpen(false)}>
-              <Zap className="w-6 h-6 flex-shrink-0" /> Genset
-            </Link>
-            <Link href="/reports/vehicle" className="block px-4 py-3 rounded-xl font-semibold text-lpka-primary hover:bg-lpka-primary/10 transition-all flex items-center gap-3" onClick={() => setIsOpen(false)}>
+            <Link href="/reports/vehicle-menu" className="block px-4 py-3 rounded-xl font-semibold text-lpka-primary hover:bg-lpka-primary/10 transition-all flex items-center gap-3" onClick={() => setIsOpen(false)}>
               <Truck className="w-6 h-6 flex-shrink-0" /> Kendaraan
+            </Link>
+            <Link href="/reports/genset-menu" className="block px-4 py-3 rounded-xl font-semibold text-lpka-green hover:bg-lpka-green/10 transition-all flex items-center gap-3" onClick={() => setIsOpen(false)}>
+              <Zap className="w-6 h-6 flex-shrink-0" /> Genset
             </Link>
             <Link href="/about" className="block px-4 py-3 rounded-xl font-semibold text-gray-700 hover:bg-gray-100 transition-all flex items-center gap-3" onClick={() => setIsOpen(false)}>
               <FileText className="w-6 h-6 flex-shrink-0" /> Tentang

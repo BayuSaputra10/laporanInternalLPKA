@@ -16,11 +16,26 @@ export async function GET() {
 
   const totalGenset = await prisma.gensetReport.count()
   const totalVehicle = await prisma.vehicleReport.count()
+  const totalVehicleFuel = await prisma.vehicleFuelReport.count()
+  const totalGensetFuel = await prisma.gensetFuelReport.count()
+  const totalVehicleService = await prisma.vehicleServiceReport.count()
+  const totalGensetService = await prisma.gensetServiceReport.count()
+
+  // Hitung total gabungan
+  const totalKendaraan = totalVehicle + totalVehicleFuel + totalVehicleService
+  const totalGensetAll = totalGenset + totalGensetFuel + totalGensetService
 
   return NextResponse.json({
     gensetReports,
     vehicleReports,
     totalGenset,
-    totalVehicle
+    totalVehicle,
+    totalVehicleFuel,
+    totalGensetFuel,
+    totalVehicleService,
+    totalGensetService,
+    totalKendaraan,
+    totalGensetAll
   })
 }
+
