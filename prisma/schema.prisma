@@ -84,6 +84,18 @@ model VehicleFuelReport {
   createdAt    DateTime @default(now())
 }
 
+model GensetFuelReport {
+  id        Int      @id @default(autoincrement())
+
+  tambahSolar    Float
+  tanggal        DateTime
+
+  fotoStruk Bytes?   // Foto struk pembelian solar genset
+
+  reportNumber String @unique @default(cuid())
+  createdAt    DateTime @default(now())
+}
+
 model InspectionItem {
   id     Int    @id @default(autoincrement())
   name   String

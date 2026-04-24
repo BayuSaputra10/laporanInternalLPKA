@@ -31,7 +31,7 @@ export default function Footer({ footerData }: FooterProps) {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-8 md:p-10">
 
           {/* SUMMARY */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
             
             <div className="bg-white/10 rounded-xl p-5">
               <div className="flex items-center gap-3 mb-2">
@@ -42,19 +42,30 @@ export default function Footer({ footerData }: FooterProps) {
                 {footerData.todayTotal} Laporan
               </p>
               <p className="text-xs text-white/60">
-                Genset: {footerData.todayGenset} | Kendaraan: {footerData.todayVehicle} | Solar: {footerData.todayVehicleFuel}
+                Genset: {footerData.todayGenset} | Kend: {footerData.todayVehicle}
               </p>
             </div>
 
             <div className="bg-white/10 rounded-xl p-5">
               <div className="flex items-center gap-3 mb-2">
                 <Fuel className="w-5 h-5 text-yellow-400" />
-                <p className="text-xs text-white/70 uppercase">Solar Hari Ini</p>
+                <p className="text-xs text-white/70 uppercase">Solar Kendaraan</p>
               </div>
               <p className="text-lg font-bold text-white">
                 {footerData.todayVehicleFuel} Pengisian
               </p>
               <p className="text-xs text-white/60">Kendaraan Dinas</p>
+            </div>
+
+            <div className="bg-white/10 rounded-xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <Fuel className="w-5 h-5 text-orange-400" />
+                <p className="text-xs text-white/70 uppercase">Solar Genset</p>
+              </div>
+              <p className="text-lg font-bold text-white">
+                {footerData.todayGensetFuel} Pengisian
+              </p>
+              <p className="text-xs text-white/60">Genset</p>
             </div>
 
             <div className="bg-white/10 rounded-xl p-5">
@@ -114,7 +125,8 @@ export default function Footer({ footerData }: FooterProps) {
                 <li><Link href="/">Dashboard</Link></li>
                 <li><Link href="/reports/genset">Genset</Link></li>
                 <li><Link href="/reports/vehicle">Kendaraan</Link></li>
-                <li><Link href="/reports/vehicle-fuel">Pengisian Solar</Link></li>
+                <li><Link href="/reports/vehicle-fuel">Solar Kendaraan</Link></li>
+                <li><Link href="/reports/genset-fuel">Solar Genset</Link></li>
               </ul>
             </div>
 
