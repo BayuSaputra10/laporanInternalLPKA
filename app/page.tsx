@@ -5,7 +5,7 @@ import { ActionButtons, DashboardCharts } from "@/app/components/dashboard"
 export const revalidate = 0
 
 export default async function Page() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/dashboard`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://laporan-internal-lpka.vercel.app"}/api/dashboard`, {
     cache: "no-store",
   })
 
