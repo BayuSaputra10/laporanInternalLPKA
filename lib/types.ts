@@ -27,10 +27,19 @@ export interface VehicleReport {
   createdAt: string;
 }
 
+export interface VehicleFuelReport {
+  id: number;
+  jenisKendaraan: string;
+  tambahSolar: number;
+  tanggal: string;
+  createdAt: string;
+}
+
 export interface FooterData {
   todayTotal: number;
   todayGenset: number;
   todayVehicle: number;
+  todayVehicleFuel: number;
   pending: number;
   activeTeams: number;
 }
@@ -38,8 +47,10 @@ export interface FooterData {
 export interface DashboardData {
   gensetReports: GensetReport[];
   vehicleReports: VehicleReport[];
+  vehicleFuelReports: VehicleFuelReport[];
   totalGenset: number;
   totalVehicle: number;
+  totalVehicleFuel: number;
   footerData: FooterData;
 }
 

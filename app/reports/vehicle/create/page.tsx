@@ -122,7 +122,7 @@ export default function CreateVehicleReport() {
 
       if (res.ok && data.success) {
         toast.success('Laporan kendaraan berhasil dibuat!')
-        router.push('/')
+        router.push('/reports/vehicle')
       } else {
         toast.error(data.message || 'Gagal membuat laporan kendaraan')
       }

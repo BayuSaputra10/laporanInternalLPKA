@@ -1,14 +1,17 @@
-# TODO - Tambah Kolom Nama Driver di Form Kendaraan
+# TODO: Add Laporan Pengisian Solar Kendaraan Dinas
 
-- [x] 1. Buat rencana edit
-- [x] 2. Konfirmasi user
-- [x] 3. Edit `prisma/schema.prisma` — tambah field `namaDriver`
-- [x] 4. Edit `lib/types.ts` — tambah `namaDriver` pada interface `VehicleReport`
-- [x] 5. Edit `app/api/reports/vehicle/route.ts` — baca, validasi, sort, select `namaDriver`
-- [x] 6. Edit `app/reports/vehicle/create/page.tsx` — input field Nama Driver
-- [x] 7. Edit `app/reports/vehicle/page.tsx` — tampilkan kolom Nama Driver di tabel
-- [x] 8. Edit `app/reports/vehicle/[id]/page.tsx` — sertakan `namaDriver` di safeData
-- [x] 9. Edit `app/reports/vehicle/[id]/VehicleDetailClient.tsx` — tampilkan Nama Driver di detail
-- [x] 10. Jalankan migrasi Prisma (`npx prisma migrate dev --name add_nama_driver`)
-- [x] 11. Verifikasi build/compile OK
+## Steps
+- [ ] 1. Update `prisma/schema.prisma` — add `VehicleFuelReport` model
+- [ ] 2. Update `lib/types.ts` — add `VehicleFuelReport` interface & update `FooterData`/`DashboardData`
+- [ ] 3. Run Prisma migration & generate
+- [ ] 4. Create `app/api/reports/vehicle-fuel/route.ts` — GET, POST, DELETE
+- [ ] 5. Update `app/api/reports/[id]/route.ts` — include `VehicleFuelReport` lookup
+- [ ] 6. Create `app/reports/vehicle-fuel/create/page.tsx` — fuel fill form
+- [ ] 7. Create `app/reports/vehicle-fuel/page.tsx` — list page
+- [ ] 8. Create `app/reports/vehicle-fuel/[id]/page.tsx` — detail server component
+- [ ] 9. Create `app/reports/vehicle-fuel/[id]/VehicleFuelDetailClient.tsx` — detail client + PDF
+- [ ] 10. Update `app/page.tsx` — stats, button, recent reports, footerData query
+- [ ] 11. Update `app/components/Footer.tsx` — include fuel report stats
+- [ ] 12. Update `app/actions/report.ts` — support `vehicle-fuel` delete
+- [ ] 13. Test & verify
 

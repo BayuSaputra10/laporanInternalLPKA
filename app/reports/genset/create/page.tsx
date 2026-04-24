@@ -157,8 +157,8 @@ export default function CreateGensetReport() {
       const data = await res.json()
 
       if (res.ok && data.success) {
-        toast.success('Berhasil!')
-        router.push('/')
+        toast.success('Berhasil membuat laporan genset!')
+        router.push('/reports/genset')
       } else {
         toast.error(data.message || 'Gagal')
       }

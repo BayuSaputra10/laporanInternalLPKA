@@ -3,6 +3,7 @@
 import Link from "next/link"
 import {
   Zap,
+  Fuel,
   Phone,
   Mail,
   MapPin,
@@ -41,8 +42,19 @@ export default function Footer({ footerData }: FooterProps) {
                 {footerData.todayTotal} Laporan
               </p>
               <p className="text-xs text-white/60">
-                Genset: {footerData.todayGenset} | Kendaraan: {footerData.todayVehicle}
+                Genset: {footerData.todayGenset} | Kendaraan: {footerData.todayVehicle} | Solar: {footerData.todayVehicleFuel}
               </p>
+            </div>
+
+            <div className="bg-white/10 rounded-xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <Fuel className="w-5 h-5 text-yellow-400" />
+                <p className="text-xs text-white/70 uppercase">Solar Hari Ini</p>
+              </div>
+              <p className="text-lg font-bold text-white">
+                {footerData.todayVehicleFuel} Pengisian
+              </p>
+              <p className="text-xs text-white/60">Kendaraan Dinas</p>
             </div>
 
             <div className="bg-white/10 rounded-xl p-5">
@@ -102,6 +114,7 @@ export default function Footer({ footerData }: FooterProps) {
                 <li><Link href="/">Dashboard</Link></li>
                 <li><Link href="/reports/genset">Genset</Link></li>
                 <li><Link href="/reports/vehicle">Kendaraan</Link></li>
+                <li><Link href="/reports/vehicle-fuel">Pengisian Solar</Link></li>
               </ul>
             </div>
 

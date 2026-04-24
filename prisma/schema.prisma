@@ -71,6 +71,19 @@ model GensetInspection {
   item   InspectionItem @relation(fields: [itemId], references: [id])
 }
 
+model VehicleFuelReport {
+  id        Int      @id @default(autoincrement())
+
+  jenisKendaraan String
+  tambahSolar    Float
+  tanggal        DateTime
+
+  fotoStruk Bytes?   // Foto struk pembelian solar
+
+  reportNumber String @unique @default(cuid())
+  createdAt    DateTime @default(now())
+}
+
 model InspectionItem {
   id     Int    @id @default(autoincrement())
   name   String
