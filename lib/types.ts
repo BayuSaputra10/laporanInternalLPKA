@@ -3,28 +3,28 @@ export interface GensetReport {
   id: number;
   regu: string;
   tanggal: string;
-  waktuPemakaianJam: number;
-  hourMeterAwal: number;
-  hourMeterAkhir: number;
-  solarLevelAwal: number;
-  solarLevelAkhir: number;
-  solarPemakaian: number | null;
-  createdAt: string;
+  waktuPemakaianJam?: number;
+  hourMeterAwal?: number;
+  hourMeterAkhir?: number;
+  solarLevelAwal?: number;
+  solarLevelAkhir?: number;
+  solarPemakaian?: number | null;
+  createdAt?: string;
 }
 
 export interface VehicleReport {
   id: number;
   jenisKendaraan: string;
-  namaDriver: string;
-  keperluan: string;
+  namaDriver?: string;
+  keperluan?: string;
   tanggal: string;
-  kmAwal: number;
-  kmAkhir: number;
-  kmPemakaian: number | null;
-  solarAwalStrip: number;
-  solarAkhirStrip: number;
-  solarPemakaian: number | null;
-  createdAt: string;
+  kmAwal?: number;
+  kmAkhir?: number;
+  kmPemakaian?: number | null;
+  solarAwalStrip?: number;
+  solarAkhirStrip?: number;
+  solarPemakaian?: number | null;
+  createdAt?: string;
 }
 
 export interface VehicleFuelReport {
@@ -32,14 +32,14 @@ export interface VehicleFuelReport {
   jenisKendaraan: string;
   tambahSolar: number;
   tanggal: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface GensetFuelReport {
   id: number;
   tambahSolar: number;
   tanggal: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface VehicleServiceReport {
@@ -47,14 +47,14 @@ export interface VehicleServiceReport {
   jenisKendaraan: string;
   tanggal: string;
   catatan: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface GensetServiceReport {
   id: number;
   tanggal: string;
   catatan: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface FooterData {

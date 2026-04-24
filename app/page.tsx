@@ -1,32 +1,10 @@
 import DashboardHeader from "@/app/components/DashboardHeader"
 import Footer from "@/app/components/Footer"
 import { ActionButtons, AppAboutSection, DashboardCharts, RecentActivity } from "@/app/components/dashboard"
-
-export const revalidate = 0
+import { getDashboardData } from "@/lib/dashboard"
 
 export default async function Page() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://laporan-internal-lpka.vercel.app"}/api/dashboard`, {
-    cache: "no-store",
-  })
-
-  const dashboardData = res.ok
-    ? await res.json()
-    : {
-        totalVehicle: 0,
-        totalVehicleFuel: 0,
-        totalVehicleService: 0,
-        totalGenset: 0,
-        totalGensetFuel: 0,
-        totalGensetService: 0,
-        totalKendaraan: 0,
-        totalGensetAll: 0,
-        vehicleReports: [],
-        gensetReports: [],
-        vehicleFuelReports: [],
-        gensetFuelReports: [],
-        vehicleServiceReports: [],
-        gensetServiceReports: [],
-      }
+  const dashboardData = await getDashboardData()
 
   const footerData = {
     todayTotal: dashboardData.totalKendaraan + dashboardData.totalGensetAll,

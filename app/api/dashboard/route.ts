@@ -4,42 +4,58 @@ import { NextResponse } from "next/server"
 export const runtime = "nodejs"
 
 export async function GET() {
-  const gensetReports = await prisma.gensetReport.findMany({
-    take: 5,
-    orderBy: { id: "desc" }
-  })
-
-  const vehicleReports = await prisma.vehicleReport.findMany({
-    take: 5,
-    orderBy: { id: "desc" }
-  })
-
-  const vehicleFuelReports = await prisma.vehicleFuelReport.findMany({
-    take: 5,
-    orderBy: { id: "desc" }
-  })
-
-  const gensetFuelReports = await prisma.gensetFuelReport.findMany({
-    take: 5,
-    orderBy: { id: "desc" }
-  })
-
-  const vehicleServiceReports = await prisma.vehicleServiceReport.findMany({
-    take: 5,
-    orderBy: { id: "desc" }
-  })
-
-  const gensetServiceReports = await prisma.gensetServiceReport.findMany({
-    take: 5,
-    orderBy: { id: "desc" }
-  })
-
-  const totalGenset = await prisma.gensetReport.count()
-  const totalVehicle = await prisma.vehicleReport.count()
-  const totalVehicleFuel = await prisma.vehicleFuelReport.count()
-  const totalGensetFuel = await prisma.gensetFuelReport.count()
-  const totalVehicleService = await prisma.vehicleServiceReport.count()
-  const totalGensetService = await prisma.gensetServiceReport.count()
+  // Jalankan semua query secara paralel untuk mengurangi latency
+  const [
+    gensetReports,
+    vehicleReports,
+    vehicleFuelReports,
+    gensetFuelReports,
+    vehicleServiceReports,
+    gensetServiceReports,
+    totalGenset,
+    totalVehicle,
+    totalVehicleFuel,
+    totalGensetFuel,
+    totalVehicleService,
+    totalGensetService,
+  ] = await Promise.all([
+    prisma.gensetReport.findMany({
+      take: 5,
+      orderBy: { id: "desc" },
+      select: { id: true, regu: true, tanggal: true },
+    }),
+    prisma.vehicleReport.findMany({
+      take: 5,
+      orderBy: { id: "desc" },
+      select: { id: true, jenisKendaraan: true, tanggal: true },
+    }),
+    prisma.vehicleFuelReport.findMany({
+      take: 5,
+      orderBy: { id: "desc" },
+      select: { id: true, jenisKendaraan: true, tambahSolar: true, tanggal: true },
+    }),
+    prisma.gensetFuelReport.findMany({
+      take: 5,
+      orderBy: { id: "desc" },
+      select: { id: true, tambahSolar: true, tanggal: true },
+    }),
+    prisma.vehicleServiceReport.findMany({
+      take: 5,
+      orderBy: { id: "desc" },
+      select: { id: true, jenisKendaraan: true, tanggal: true },
+    }),
+    prisma.gensetServiceReport.findMany({
+      take: 5,
+      orderBy: { id: "desc" },
+      select: { id: true, catatan: true, tanggal: true },
+    }),
+    prisma.gensetReport.count(),
+    prisma.vehicleReport.count(),
+    prisma.vehicleFuelReport.count(),
+    prisma.gensetFuelReport.count(),
+    prisma.vehicleServiceReport.count(),
+    prisma.gensetServiceReport.count(),
+  ])
 
   // Hitung total gabungan
   const totalKendaraan = totalVehicle + totalVehicleFuel + totalVehicleService
@@ -59,7 +75,7 @@ export async function GET() {
     totalVehicleService,
     totalGensetService,
     totalKendaraan,
-    totalGensetAll
+    totalGensetAll,
   })
 }
 
