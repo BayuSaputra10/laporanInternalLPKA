@@ -22,6 +22,7 @@ export default async function Page({
   const safeData = {
     id: data.id,
     jenisKendaraan: data.jenisKendaraan,
+    namaDriver: data.namaDriver,
     keperluan: data.keperluan,
     tanggal: data.tanggal,
 

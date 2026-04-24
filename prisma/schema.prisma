@@ -12,6 +12,7 @@ model VehicleReport {
   id        Int      @id @default(autoincrement())
 
   jenisKendaraan String
+  namaDriver     String
   keperluan      String
   tanggal        DateTime
 

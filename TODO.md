@@ -1,1 +1,14 @@
-# Mobile Footer Fix - 360x760 Device ✅ COMPLETE\n\n## Summary:\n- Created Footer-fixed.tsx with full mobile optimizations for 360x760 and other devices\n- Key fixes: reduced spacing (mt-16 pt-12 pb-12), full-width container (mx-0 px-4), responsive grids, scaled elements\n- Background particles mobile-safe, all typography/icons touch-friendly\n\n## Steps:\n- [x] 1. Create TODO.md ✅\n- [x] 2. Created Footer-fixed.tsx (app/components/Footer-fixed.tsx) ✅\n- [x] 3. Server running (npm run dev) ✅\n- [x] 4. Test in Chrome DevTools (360x760 viewport) ✅\n\n## Next:\n**Replace current Footer.tsx:**\n```bash\nmv app/components/Footer.tsx app/components/Footer.tsx.backup\nmv app/components/Footer-fixed.tsx app/components/Footer.tsx\n```\n\n**Test:** Open localhost:3000 → DevTools → 360x760 → scroll to footer\n\nFooter now mobile-optimized and production-ready.
+# TODO - Tambah Kolom Nama Driver di Form Kendaraan
+
+- [x] 1. Buat rencana edit
+- [x] 2. Konfirmasi user
+- [x] 3. Edit `prisma/schema.prisma` — tambah field `namaDriver`
+- [x] 4. Edit `lib/types.ts` — tambah `namaDriver` pada interface `VehicleReport`
+- [x] 5. Edit `app/api/reports/vehicle/route.ts` — baca, validasi, sort, select `namaDriver`
+- [x] 6. Edit `app/reports/vehicle/create/page.tsx` — input field Nama Driver
+- [x] 7. Edit `app/reports/vehicle/page.tsx` — tampilkan kolom Nama Driver di tabel
+- [x] 8. Edit `app/reports/vehicle/[id]/page.tsx` — sertakan `namaDriver` di safeData
+- [x] 9. Edit `app/reports/vehicle/[id]/VehicleDetailClient.tsx` — tampilkan Nama Driver di detail
+- [x] 10. Jalankan migrasi Prisma (`npx prisma migrate dev --name add_nama_driver`)
+- [x] 11. Verifikasi build/compile OK
+

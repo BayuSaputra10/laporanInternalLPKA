@@ -166,6 +166,18 @@ export default function VehicleDetailClient({ data }: any) {
                   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-lpka-primary" />
                 </div>
                 <div>
+                  <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Nama Driver</h3>
+                  <p className="font-bold text-base sm:text-lg text-lpka-primary break-words">
+                    {data.namaDriver}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 sm:p-4 bg-lpka-primary/5 rounded-xl border border-lpka-primary/20">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-lpka-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Users className="w-5 h-5 sm:w-6 sm:h-6 text-lpka-primary" />
+                </div>
+                <div>
                   <h3 className="font-semibold text-gray-800 text-sm sm:text-base">Keperluan</h3>
                   <p className="font-bold text-base sm:text-lg text-lpka-primary break-words">
                     {data.keperluan}

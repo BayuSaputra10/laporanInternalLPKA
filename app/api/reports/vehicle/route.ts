@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     const sortDir = (searchParams.get('sortDir') || 'desc') as 'asc' | 'desc'
 
     // Validate sortBy
-    const validSortFields = ['id', 'tanggal', 'jenisKendaraan', 'keperluan', 'kmAkhir', 'createdAt']
+    const validSortFields = ['id', 'tanggal', 'jenisKendaraan', 'namaDriver', 'keperluan', 'kmAkhir', 'createdAt']
     if (!validSortFields.includes(sortBy as any)) {
       return NextResponse.json({ error: 'Invalid sortBy field' }, { status: 400 })
     }
@@ -25,6 +25,7 @@ export async function GET(req: Request) {
       id: { id: sortDir },
       tanggal: { tanggal: sortDir },
       jenisKendaraan: { jenisKendaraan: sortDir },
+      namaDriver: { namaDriver: sortDir },
       keperluan: { keperluan: sortDir },
       kmAkhir: { kmAkhir: sortDir },
       createdAt: { createdAt: sortDir }
@@ -40,6 +41,7 @@ export async function GET(req: Request) {
           id: true,
           tanggal: true,
           jenisKendaraan: true,
+          namaDriver: true,
           keperluan: true,
           kmAwal: true,
           kmAkhir: true,
@@ -73,6 +75,7 @@ export async function POST(req: Request) {
     const formData = await req.formData()
 
     const jenisKendaraan = formData.get("jenisKendaraan")
+    const namaDriver = formData.get("namaDriver")
     const keperluan = formData.get("keperluan")
     const tanggal = formData.get("tanggal")
 
@@ -99,6 +102,7 @@ export async function POST(req: Request) {
     // =========================
     console.log("VEHICLE PAYLOAD:", {
       jenisKendaraan,
+      namaDriver,
       keperluan,
       tanggal,
       kmAwalNum,
@@ -110,7 +114,7 @@ export async function POST(req: Request) {
     // =========================
     // VALIDASI FIELD WAJIB
     // =========================
-    if (!jenisKendaraan || !keperluan || !tanggal) {
+    if (!jenisKendaraan || !namaDriver || !keperluan || !tanggal) {
       return NextResponse.json(
         { success: false, message: "Field wajib belum lengkap" },
         { status: 400 }
@@ -157,6 +161,7 @@ export async function POST(req: Request) {
     const report = await prisma.vehicleReport.create({
       data: {
         jenisKendaraan: String(jenisKendaraan),
+        namaDriver: String(namaDriver),
         keperluan: String(keperluan),
         tanggal: new Date(String(tanggal)),
 

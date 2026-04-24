@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 
 type FormData = {
   jenisKendaraan: string
+  namaDriver: string
   keperluan: string
   tanggal: string
   kmAwal: number | null
@@ -22,6 +23,7 @@ export default function CreateVehicleReport() {
 
   const [form, setForm] = useState<FormData>({
     jenisKendaraan: '',
+    namaDriver: '',
     keperluan: '',
     tanggal: '',
     kmAwal: null,
@@ -70,6 +72,7 @@ export default function CreateVehicleReport() {
     const newErrors: Errors = {}
 
     if (!form.jenisKendaraan.trim()) newErrors.jenisKendaraan = 'Jenis kendaraan wajib diisi'
+    if (!form.namaDriver.trim()) newErrors.namaDriver = 'Nama driver wajib diisi'
     if (!form.keperluan.trim()) newErrors.keperluan = 'Keperluan wajib diisi'
     if (!form.tanggal) newErrors.tanggal = 'Tanggal wajib diisi'
 
@@ -101,6 +104,7 @@ export default function CreateVehicleReport() {
     try {
       const formData = new FormData()
       formData.append('jenisKendaraan', form.jenisKendaraan)
+      formData.append('namaDriver', form.namaDriver)
       formData.append('keperluan', form.keperluan)
       formData.append('tanggal', form.tanggal)
       formData.append('kmAwal', String(form.kmAwal!))
@@ -161,10 +165,16 @@ export default function CreateVehicleReport() {
               </div>
 
               <div>
-                <label className={labelClass}>Keperluan *</label>
-                <input name='keperluan' value={form.keperluan} onChange={handleChange} className={inputClass} />
-                {errors.keperluan && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.keperluan}</p>}
+                <label className={labelClass}>Nama Driver *</label>
+                <input name='namaDriver' value={form.namaDriver} onChange={handleChange} className={inputClass} />
+                {errors.namaDriver && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.namaDriver}</p>}
               </div>
+            </div>
+
+            <div>
+              <label className={labelClass}>Keperluan *</label>
+              <input name='keperluan' value={form.keperluan} onChange={handleChange} className={inputClass} />
+              {errors.keperluan && <p className='text-red-500 text-xs sm:text-sm mt-1 md:mt-2 font-medium'>{errors.keperluan}</p>}
             </div>
 
             <div>

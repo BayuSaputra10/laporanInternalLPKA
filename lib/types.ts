@@ -15,6 +15,7 @@ export interface GensetReport {
 export interface VehicleReport {
   id: number;
   jenisKendaraan: string;
+  namaDriver: string;
   keperluan: string;
   tanggal: string;
   kmAwal: number;

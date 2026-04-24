@@ -14,6 +14,7 @@ interface Report {
   id: number
   tanggal: Date
   jenisKendaraan: string
+  namaDriver: string
   keperluan: string
   kmAwal: number
   kmAkhir: number
@@ -148,6 +149,15 @@ function VehiclePage() {
                       color="primary"
                     />
                     <SortableHeader
+                      label="Driver"
+                      sortBy="namaDriver"
+                      currentSortBy={sortBy}
+                      currentSortDir={sortDir as 'asc' | 'desc'}
+                      basePath={basePath}
+                      otherParams={`page=${page}`}
+                      color="primary"
+                    />
+                    <SortableHeader
                       label="Keperluan"
                       sortBy="keperluan"
                       currentSortBy={sortBy}
@@ -178,6 +188,9 @@ function VehiclePage() {
                       </td>
                       <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700 font-medium">
                         {r.jenisKendaraan}
+                      </td>
+                      <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
+                        {r.namaDriver}
                       </td>
                       <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
                         {r.keperluan}
