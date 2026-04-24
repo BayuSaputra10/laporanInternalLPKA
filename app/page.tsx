@@ -1,6 +1,6 @@
 import DashboardHeader from "@/app/components/DashboardHeader"
 import Footer from "@/app/components/Footer"
-import { ActionButtons, DashboardCharts, RecentActivity } from "@/app/components/dashboard"
+import { ActionButtons, AppAboutSection, DashboardCharts, RecentActivity } from "@/app/components/dashboard"
 
 export const revalidate = 0
 
@@ -53,6 +53,7 @@ export default async function Page() {
         vehicleServiceReports={dashboardData.vehicleServiceReports || []}
         gensetServiceReports={dashboardData.gensetServiceReports || []}
       />
+      <AppAboutSection />
       <Footer footerData={footerData} />
     </>
   )

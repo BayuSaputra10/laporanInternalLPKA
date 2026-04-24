@@ -176,7 +176,7 @@ export default function Footer({ footerData }: FooterProps) {
 
           {/* COPYRIGHT */}
           <div className="border-t border-white/10 mt-10 pt-6 text-center text-xs text-white/50">
-            © 2024 LPKA Lampung
+            © 2026 LPKA Lampung
           </div>
 
         </div>
