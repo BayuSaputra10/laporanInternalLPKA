@@ -1,11 +1,11 @@
 import DashboardHeader from "@/app/components/DashboardHeader"
 import Footer from "@/app/components/Footer"
-import { ActionButtons, DashboardCharts } from "@/app/components/dashboard"
+import { ActionButtons, DashboardCharts, RecentActivity } from "@/app/components/dashboard"
 
 export const revalidate = 0
 
 export default async function Page() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || "https://laporan-internal-lpka.vercel.app"}/api/dashboard`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/dashboard`, {
     cache: "no-store",
   })
 
@@ -20,6 +20,12 @@ export default async function Page() {
         totalGensetService: 0,
         totalKendaraan: 0,
         totalGensetAll: 0,
+        vehicleReports: [],
+        gensetReports: [],
+        vehicleFuelReports: [],
+        gensetFuelReports: [],
+        vehicleServiceReports: [],
+        gensetServiceReports: [],
       }
 
   const footerData = {
@@ -39,6 +45,14 @@ export default async function Page() {
       <DashboardHeader />
       <ActionButtons />
       <DashboardCharts data={dashboardData} />
+      <RecentActivity
+        vehicleReports={dashboardData.vehicleReports || []}
+        gensetReports={dashboardData.gensetReports || []}
+        vehicleFuelReports={dashboardData.vehicleFuelReports || []}
+        gensetFuelReports={dashboardData.gensetFuelReports || []}
+        vehicleServiceReports={dashboardData.vehicleServiceReports || []}
+        gensetServiceReports={dashboardData.gensetServiceReports || []}
+      />
       <Footer footerData={footerData} />
     </>
   )

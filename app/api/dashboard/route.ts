@@ -14,6 +14,26 @@ export async function GET() {
     orderBy: { id: "desc" }
   })
 
+  const vehicleFuelReports = await prisma.vehicleFuelReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
+
+  const gensetFuelReports = await prisma.gensetFuelReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
+
+  const vehicleServiceReports = await prisma.vehicleServiceReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
+
+  const gensetServiceReports = await prisma.gensetServiceReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
+
   const totalGenset = await prisma.gensetReport.count()
   const totalVehicle = await prisma.vehicleReport.count()
   const totalVehicleFuel = await prisma.vehicleFuelReport.count()
@@ -28,6 +48,10 @@ export async function GET() {
   return NextResponse.json({
     gensetReports,
     vehicleReports,
+    vehicleFuelReports,
+    gensetFuelReports,
+    vehicleServiceReports,
+    gensetServiceReports,
     totalGenset,
     totalVehicle,
     totalVehicleFuel,
