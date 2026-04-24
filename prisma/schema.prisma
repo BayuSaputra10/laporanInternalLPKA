@@ -96,6 +96,19 @@ model GensetFuelReport {
   createdAt    DateTime @default(now())
 }
 
+model VehicleServiceReport {
+  id        Int      @id @default(autoincrement())
+
+  jenisKendaraan String
+  tanggal        DateTime
+  catatan        String   // Catatan detail servis yang dilakukan
+
+  fotoServis Bytes?   // Foto dokumentasi servis kendaraan
+
+  reportNumber String @unique @default(cuid())
+  createdAt    DateTime @default(now())
+}
+
 model InspectionItem {
   id     Int    @id @default(autoincrement())
   name   String

@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 
-export async function deleteReport(id: number, type: "genset" | "vehicle" | "vehicle-fuel" | "genset-fuel") {
+export async function deleteReport(id: number, type: "genset" | "vehicle" | "vehicle-fuel" | "genset-fuel" | "vehicle-service") {
   try {
     if (type === "genset") {
       await prisma.gensetReport.delete({
@@ -21,6 +21,10 @@ export async function deleteReport(id: number, type: "genset" | "vehicle" | "veh
       await prisma.gensetFuelReport.delete({
         where: { id }
       })
+    } else if (type === "vehicle-service") {
+      await prisma.vehicleServiceReport.delete({
+        where: { id }
+      })
     } else {
       throw new Error(`Invalid report type: ${type}`)
     }
@@ -29,6 +33,7 @@ export async function deleteReport(id: number, type: "genset" | "vehicle" | "veh
     revalidatePath("/reports/genset")
     revalidatePath("/reports/vehicle-fuel")
     revalidatePath("/reports/genset-fuel")
+    revalidatePath("/reports/vehicle-service")
     revalidatePath("/")
   } catch (error) {
     console.error("Error deleting report:", error)

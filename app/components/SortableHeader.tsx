@@ -8,7 +8,7 @@ interface SortableHeaderProps {
   currentSortDir: 'asc' | 'desc' | null
   basePath: string
   otherParams?: string
-  color?: 'green' | 'primary'
+  color?: 'green' | 'primary' | 'purple'
   className?: string
 }
 
@@ -25,6 +25,9 @@ export default function SortableHeader({
   const getColorClasses = () => {
     if (color === 'primary') {
       return 'text-lpka-primary hover:text-lpka-primary/80'
+    }
+    if (color === 'purple') {
+      return 'text-purple-600 hover:text-purple-500'
     }
     return 'text-lpka-green hover:text-lpka-green/80'
   }

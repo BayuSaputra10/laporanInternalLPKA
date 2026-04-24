@@ -9,7 +9,8 @@ import {
   MapPin,
   Users,
   Calendar,
-  Home
+  Home,
+  Wrench
 } from "lucide-react"
 import type { FooterData } from "@/lib/types"
 
@@ -66,6 +67,17 @@ export default function Footer({ footerData }: FooterProps) {
                 {footerData.todayGensetFuel} Pengisian
               </p>
               <p className="text-xs text-white/60">Genset</p>
+            </div>
+
+            <div className="bg-white/10 rounded-xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <Wrench className="w-5 h-5 text-purple-400" />
+                <p className="text-xs text-white/70 uppercase">Servis Kendaraan</p>
+              </div>
+              <p className="text-lg font-bold text-white">
+                {footerData.todayVehicleService} Laporan
+              </p>
+              <p className="text-xs text-white/60">Kendaraan Dinas</p>
             </div>
 
             <div className="bg-white/10 rounded-xl p-5">
@@ -127,6 +139,7 @@ export default function Footer({ footerData }: FooterProps) {
                 <li><Link href="/reports/vehicle">Kendaraan</Link></li>
                 <li><Link href="/reports/vehicle-fuel">Solar Kendaraan</Link></li>
                 <li><Link href="/reports/genset-fuel">Solar Genset</Link></li>
+                <li><Link href="/reports/vehicle-service">Servis Kendaraan</Link></li>
               </ul>
             </div>
 

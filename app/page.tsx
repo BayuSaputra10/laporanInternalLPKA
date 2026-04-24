@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import Link from "next/link"
-import { Truck, Zap, Fuel, FileText, Plus, ArrowRight } from "lucide-react"
+import { Truck, Zap, Fuel, FileText, Plus, ArrowRight, Wrench } from "lucide-react"
 import { prisma } from "@/lib/prisma"
-import type { GensetReport, VehicleReport, VehicleFuelReport, GensetFuelReport } from "@/lib/types"
+import type { GensetReport, VehicleReport, VehicleFuelReport, GensetFuelReport, VehicleServiceReport } from "@/lib/types"
 import DashboardHeader from "@/app/components/DashboardHeader"
 import Footer from "@/app/components/Footer"
 
@@ -40,10 +38,16 @@ async function getDashboardData() {
     orderBy: { id: "desc" }
   })
 
+  const vehicleServiceReports = await prisma.vehicleServiceReport.findMany({
+    take: 5,
+    orderBy: { id: "desc" }
+  })
+
   const totalGenset = await prisma.gensetReport.count()
   const totalVehicle = await prisma.vehicleReport.count()
   const totalVehicleFuel = await prisma.vehicleFuelReport.count()
   const totalGensetFuel = await prisma.gensetFuelReport.count()
+  const totalVehicleService = await prisma.vehicleServiceReport.count()
 
   // Real data for footer
   const todayGenset = await prisma.gensetReport.count({
@@ -82,7 +86,16 @@ async function getDashboardData() {
     }
   })
 
-  const todayTotal = todayGenset + todayVehicle + todayVehicleFuel + todayGensetFuel
+  const todayVehicleService = await prisma.vehicleServiceReport.count({
+    where: {
+      tanggal: {
+        gte: today,
+        lt: tomorrow
+      }
+    }
+  })
+
+  const todayTotal = todayGenset + todayVehicle + todayVehicleFuel + todayGensetFuel + todayVehicleService
 
   const pendingVehicle = await prisma.vehicleReport.count({
     where: {
@@ -104,16 +117,19 @@ async function getDashboardData() {
     vehicleReports: vehicleReports as unknown as VehicleReport[],
     vehicleFuelReports: vehicleFuelReports as unknown as VehicleFuelReport[],
     gensetFuelReports: gensetFuelReports as unknown as GensetFuelReport[],
+    vehicleServiceReports: vehicleServiceReports as unknown as VehicleServiceReport[],
     totalGenset,
     totalVehicle,
     totalVehicleFuel,
     totalGensetFuel,
+    totalVehicleService,
     footerData: {
       todayTotal,
       todayGenset,
       todayVehicle,
       todayVehicleFuel,
       todayGensetFuel,
+      todayVehicleService,
       pending: pendingVehicle,
       activeTeams
     }
@@ -130,7 +146,7 @@ export default async function Page() {
       <DashboardHeader />
 
       {/* STATS GRID */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8 mb-20">
+      <section className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-5 gap-6 md:gap-8 mb-20">
         <div className="group bg-gradient-to-br from-lpka-green/10 via-white/50 to-lpka-green/5 border-4 border-lpka-green/20 rounded-2xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 backdrop-blur-sm text-center">
           <div className="w-20 h-20 md:w-24 md:h-24 bg-lpka-green/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500">
             <Zap className="w-12 h-12 md:w-14 md:h-14 text-lpka-green drop-shadow-lg" />
@@ -178,6 +194,18 @@ export default async function Page() {
             {data.totalGensetFuel.toLocaleString()}
           </div>
         </div>
+
+        <div className="group bg-gradient-to-br from-purple-500/10 via-white/50 to-purple-500/5 border-4 border-purple-500/20 rounded-2xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 backdrop-blur-sm text-center">
+          <div className="w-20 h-20 md:w-24 md:h-24 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500">
+            <Wrench className="w-12 h-12 md:w-14 md:h-14 text-purple-600 drop-shadow-lg" />
+          </div>
+          <h3 className="font-heading text-2xl md:text-3xl font-bold text-gray-800 mb-4 leading-tight">
+            Servis Kendaraan
+          </h3>
+          <div className="text-5xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-[#7c3aed] bg-clip-text text-transparent drop-shadow-2xl">
+            {data.totalVehicleService.toLocaleString()}
+          </div>
+        </div>
       </section>
 
       {/* ACTION BUTTONS */}
@@ -212,6 +240,14 @@ export default async function Page() {
         >
           <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
           Solar Genset
+          <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
+        </Link>
+        <Link
+          href="/reports/vehicle-service/create"
+          className="group flex items-center justify-center gap-4 bg-gradient-to-r from-purple-600 to-[#7c3aed] hover:from-purple-600/90 hover:to-[#7c3aed]/90 text-white px-10 py-5 md:px-12 md:py-6 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-500 min-w-[280px] border-2 border-transparent hover:border-purple-500/50"
+        >
+          <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500 shrink-0" />
+          Servis Kendaraan
           <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-500 ml-auto" />
         </Link>
       </section>
@@ -581,6 +617,106 @@ export default async function Page() {
                           <Link
                             href={`/reports/genset-fuel/${r.id}`}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-[#c2410c] text-white font-bold rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 shadow-md whitespace-nowrap"
+                          >
+                            Lihat Detail
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* VEHICLE SERVICE REPORTS */}
+      <section className="mb-24">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 lg:w-14 lg:h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center p-2 shrink-0">
+              <Wrench className="w-7 h-7 lg:w-8 lg:h-8 text-purple-600" />
+            </div>
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-[#7c3aed] bg-clip-text text-transparent">
+              Servis Kendaraan Terbaru
+            </h2>
+          </div>
+          <Link
+            href="/reports/vehicle-service"
+            className="group flex items-center gap-2 px-6 py-3 bg-purple-500/10 border-2 border-purple-500/30 rounded-xl font-semibold text-lg text-purple-700 hover:bg-purple-500 hover:text-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 whitespace-nowrap"
+          >
+            Lihat Semua
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        {data.vehicleServiceReports.length === 0 ? (
+          <div className="text-center py-20 md:py-24 text-gray-500 bg-gradient-to-b from-gray-50/50 to-transparent rounded-3xl p-12 backdrop-blur-sm border border-dashed border-gray-200">
+            <Wrench className="w-20 h-20 mx-auto mb-6 opacity-50" />
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">Belum ada laporan servis kendaraan</h3>
+            <p className="text-lg">Mulai dengan membuat laporan pertama</p>
+          </div>
+        ) : (
+          <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 overflow-hidden">
+            <div className="lg:hidden space-y-4 p-6">
+              {data.vehicleServiceReports.map((r) => (
+                <Link key={r.id} href={`/reports/vehicle-service/${r.id}`} className="group block p-6 bg-gradient-to-r from-purple-500/5 to-transparent rounded-2xl border border-purple-500/20 hover:bg-purple-500/10 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
+                      <Wrench className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-lg text-gray-900">{new Date(r.tanggal).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                      <p className="text-sm font-medium text-purple-700">{r.jenisKendaraan}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <span className="text-sm text-gray-500 truncate max-w-[200px]">{r.catatan}</span>
+                    <ArrowRight className="w-5 h-5 text-purple-600 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="hidden lg:block">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-purple-500/10">
+                    <tr>
+                      <th className="px-8 py-5 text-left font-bold text-lg text-purple-700 uppercase tracking-wider border-b-2 border-purple-500/30">
+                        Tanggal
+                      </th>
+                      <th className="px-8 py-5 text-left font-bold text-lg text-purple-700 uppercase tracking-wider border-b-2 border-purple-500/30">
+                        Kendaraan
+                      </th>
+                      <th className="px-8 py-5 text-left font-bold text-lg text-purple-700 uppercase tracking-wider border-b-2 border-purple-500/30">
+                        Catatan
+                      </th>
+                      <th className="px-8 py-5 text-right font-bold text-lg text-purple-700 uppercase tracking-wider border-b-2 border-purple-500/30">
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {data.vehicleServiceReports.map((r) => (
+                      <tr key={r.id} className="hover:bg-gray-50/50 transition-colors group">
+                        <td className="px-8 py-6 whitespace-nowrap font-semibold text-lg text-gray-900 border-r border-gray-100">
+                          {new Date(r.tanggal).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        </td>
+                        <td className="px-8 py-6 whitespace-nowrap text-lg font-semibold text-gray-800">
+                          <span className="inline-flex px-4 py-2 rounded-full bg-purple-500/10 text-purple-700 font-bold border border-purple-500/20">
+                            {r.jenisKendaraan}
+                          </span>
+                        </td>
+                        <td className="px-8 py-6 whitespace-nowrap text-lg text-gray-700 max-w-xs truncate">
+                          {r.catatan}
+                        </td>
+                        <td className="px-8 py-6 whitespace-nowrap text-right">
+                          <Link
+                            href={`/reports/vehicle-service/${r.id}`}
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-[#7c3aed] text-white font-bold rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 shadow-md whitespace-nowrap"
                           >
                             Lihat Detail
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

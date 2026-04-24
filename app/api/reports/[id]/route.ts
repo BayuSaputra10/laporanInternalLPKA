@@ -52,6 +52,15 @@ export async function GET(
       return NextResponse.json({ ...gensetFuelReport, type: 'genset-fuel' })
     }
 
+    // Try to find in vehicle service reports
+    const vehicleServiceReport = await prisma.vehicleServiceReport.findUnique({
+      where: { id: reportId }
+    })
+
+    if (vehicleServiceReport) {
+      return NextResponse.json({ ...vehicleServiceReport, type: 'vehicle-service' })
+    }
+
     return NextResponse.json(
       { error: 'Report not found' },
       { status: 404 }

@@ -7,7 +7,7 @@ interface PaginationProps {
   totalCount: number
   pageSize: number
   basePath: string
-  color?: 'green' | 'primary'
+  color?: 'green' | 'primary' | 'purple'
 }
 
 export default function Pagination({
@@ -25,6 +25,14 @@ export default function Pagination({
         text: 'text-lpka-primary',
         bgHover: 'hover:bg-lpka-primary/10',
         border: 'border-lpka-primary/20'
+      }
+    }
+    if (color === 'purple') {
+      return {
+        bg: 'bg-purple-600 hover:bg-purple-500',
+        text: 'text-purple-600',
+        bgHover: 'hover:bg-purple-50',
+        border: 'border-purple-200'
       }
     }
     return {
